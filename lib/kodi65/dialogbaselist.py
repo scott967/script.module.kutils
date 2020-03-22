@@ -10,6 +10,7 @@ from kodi65 import addon
 from kodi65 import busy
 from kodi65 import ActionHandler
 from T9Search import T9Search
+from kodi65 import utils
 
 ch = ActionHandler()
 
@@ -21,6 +22,39 @@ ID_BUTTON_TOGGLETYPE = 5007
 
 
 class DialogBaseList(object):
+    viewid = {
+        'WALL 3D' : '67',
+        'BANNER' : '52',
+        'BANNER INFO' : '53',
+        'COVERFLOW' : '58',
+        'GAMES' : '50',
+        'GLASS LIST' : '57',
+        'LANDSCAPEX' : '64',
+        'LOW LIST' : '55',
+        'MID LIST' : '70',
+        'MULTI-LIST' : '71',
+        'MULTIPLEX' : '61',
+        'PANEL' : '62',
+        'PHOTOSHOW' : '79',
+        'POSTER' : '54',
+        'RIGHT LIST' : '59',
+        'SETS' : '65',
+        'SHELF' : '63',
+        'SHELFCASE' : '69',
+        'SHOWART' : '60',
+        'SHOWCASE' : '66',
+        'WALL' : '56',
+        'WIDE' : '51',
+        'List' : '50',
+        'IconWall' : '52',
+        'Shift' : '53',
+        'InfoWall' : '54',
+        'WideList' : '55',
+        'Banner' : '501',
+        'Fanart' : '502'
+    }
+
+
 
     """
     BaseList for MediaBrowsers (handles filtering, sorting)
@@ -59,6 +93,9 @@ class DialogBaseList(object):
     def onInit(self):
         super(DialogBaseList, self).onInit()
         viewtype = addon.setting("viewtype_selection")
+        self.cur_viewtype = DialogBaseList.viewid.get(xbmc.getInfoLabel('Container.Viewmode'))
+        utils.log('module.kodi65.current viewtype: ' + self.cur_viewtype)
+        utils.log('module.kodi65.viewtype: ' + viewtype)
         if viewtype:
             xbmc.executebuiltin("Container.SetViewMode(%s)" % viewtype)
         self.update_ui()
@@ -93,6 +130,7 @@ class DialogBaseList(object):
         """
         addon.set_setting("viewtype_selection", str(self.getCurrentContainerId()))
         self.last_position = self.getCurrentListPosition()
+        xbmc.executebuiltin("Container.SetViewMode(%s)" % self.cur_viewtype)
         super(DialogBaseList, self).close()
 
     def set_sort(self, sort):
