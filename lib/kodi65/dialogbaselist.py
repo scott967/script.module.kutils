@@ -9,7 +9,7 @@ import xbmcgui
 from kodi65 import addon
 from kodi65 import busy
 from kodi65 import ActionHandler
-from T9Search import T9Search
+from .T9Search import T9Search
 from kodi65 import utils
 
 ch = ActionHandler()
@@ -145,7 +145,7 @@ class DialogBaseList(object):
         """
         check if sort is valid. If not, change to default.
         """
-        if self.sort not in [i for i in self.SORTS[self.sort_key].keys()]:
+        if self.sort not in [i for i in list(self.SORTS[self.sort_key].keys())]:
             self.set_sort(self.default_sort)
 
     @ch.click(ID_BUTTON_TOGGLETYPE)
@@ -187,7 +187,7 @@ class DialogBaseList(object):
             result = xbmcgui.Dialog().input(heading=addon.LANG(16017),
                                             type=xbmcgui.INPUT_ALPHANUM)
             if result and result > -1:
-                self.search(result.decode("utf-8"))
+                self.search(result)
         else:
             T9Search(call=self.search,
                      start_value="",
@@ -344,8 +344,8 @@ class DialogBaseList(object):
         open dialog and let user choose sortmethod
         returns True if sorthmethod changed
         """
-        listitems = self.SORTS[sort_key].values()
-        sort_strings = self.SORTS[sort_key].keys()
+        listitems = list(self.SORTS[sort_key].values())
+        sort_strings = list(self.SORTS[sort_key].keys())
         preselect = listitems.index(self.sort_label) if self.sort_label in listitems else -1
         index = xbmcgui.Dialog().select(heading=addon.LANG(32104),
                                         list=listitems,

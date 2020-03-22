@@ -205,7 +205,7 @@ class LocalDB(object):
         db_movie.set_artwork(movie['art'])
         db_movie.set_videoinfos(movie['streamdetails']["video"])
         db_movie.set_audioinfos(movie['streamdetails']["audio"])
-        stream_info = media_streamdetails(movie['file'].encode('utf-8').lower(),
+        stream_info = media_streamdetails(movie['file'].lower(),
                                           movie['streamdetails'])
         db_movie.update_properties(stream_info)
         db_movie.set_cast(movie.get("cast"))

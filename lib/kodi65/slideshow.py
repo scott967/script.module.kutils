@@ -35,7 +35,7 @@ class SlideShow(xbmcgui.WindowXMLDialog):
 
 
 def open(listitems, index):
-    slideshow = SlideShow(u'script-script.module.kodi65-pictureviewer.xml',
+    slideshow = SlideShow('script-script.module.kodi65-pictureviewer.xml',
                           os.path.join(os.path.dirname(__file__), "..", ".."),
                           listitems=listitems,
                           index=index)

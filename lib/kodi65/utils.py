@@ -11,8 +11,8 @@ import datetime
 import time
 import re
 import hashlib
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
+import urllib.request, urllib.error, urllib.parse
 import xbmc
 import xbmcgui
 import xbmcvfs
@@ -45,10 +45,8 @@ def get_youtube_info(youtube_id):
 
 def log(*args):
     for arg in args:
-        if isinstance(arg, str):
-            arg = arg.decode("utf-8", 'ignore')
-        message = u'%s: %s' % (addon.ID, arg)
-        xbmc.log(msg=message.encode("utf-8", 'ignore'),
+        message = '%s: %s' % (addon.ID, arg)
+        xbmc.log(msg=message,
                  level=xbmc.LOGDEBUG)
 
 
@@ -104,7 +102,7 @@ def check_version():
 
 
 def get_skin_string(name):
-    return xbmc.getInfoLabel("Skin.String(%s)").decode("utf-8")
+    return xbmc.getInfoLabel("Skin.String(%s)")
 
 
 def set_skin_string(name, value):
@@ -165,12 +163,12 @@ def millify(n):
     """
     make large numbers human-readable, return string
     """
-    millnames = [' ', '.000', ' ' + addon.LANG(32000), ' ' + addon.LANG(32001), ' ' + addon.LANG(32002)]
+    millnames = [' ', ',000', ' ' + addon.LANG(32000), ' ' + addon.LANG(32001), ' ' + addon.LANG(32002)]
     if not n or n <= 100:
         return ""
     n = float(n)
     char_count = len(str(n))
-    millidx = (char_count / 3) - 1
+    millidx = int(char_count / 3) - 1
     if millidx == 3 or char_count == 9:
         return '%.2f%s' % (n / 10 ** (3 * millidx), millnames[millidx])
     else:
@@ -207,7 +205,7 @@ def format_time(time, time_format=None):
 
 def input_userrating(preselect=-1):
     index = xbmcgui.Dialog().select(heading=addon.LANG(38023),
-                                    list=[addon.LANG(10035)] + [str(i) for i in xrange(1, 11)],
+                                    list=[addon.LANG(10035)] + [str(i) for i in range(1, 11)],
                                     preselect=preselect)
     if index == preselect:
         return -1
@@ -251,11 +249,11 @@ def create_listitems(data=None, preload_images=0):
 
 
 def translate_path(*args):
-    return xbmc.translatePath(os.path.join(*args)).decode("utf-8")
+    return xbmc.translatePath(os.path.join(*args))
 
 
 def get_infolabel(name):
-    return xbmc.getInfoLabel(name).decode("utf-8")
+    return xbmc.getInfoLabel(name)
 
 
 def calculate_age(born, died=False):
@@ -320,7 +318,7 @@ def get_JSON_response(url="", cache_days=7.0, folder=False, headers=False):
     get JSON response for *url, makes use of prop and file cache.
     """
     now = time.time()
-    hashed_url = hashlib.md5(url).hexdigest()
+    hashed_url = hashlib.md5(url.encode("utf-8","ignore")).hexdigest()
     cache_path = translate_path(addon.DATA_PATH, folder) if folder else translate_path(addon.DATA_PATH)
     cache_seconds = int(cache_days * 86400.0)
     if not cache_days:
@@ -360,13 +358,13 @@ def dict_to_windowprops(data=None, prefix="", window_id=10000):
     window = xbmcgui.Window(window_id)
     if not data:
         return None
-    for (key, value) in data.iteritems():
-        value = unicode(value)
+    for (key, value) in data.items():
+        value = str(value)
         window.setProperty('%s%s' % (prefix, key), value)
 
 
 def get_file(url):
-    clean_url = translate_path(urllib.unquote(url)).replace("image://", "")
+    clean_url = translate_path(urllib.parse.unquote(url)).replace("image://", "")
     clean_url = clean_url.rstrip("/")
     cached_thumb = xbmc.getCacheThumbName(clean_url)
     vid_cache_file = os.path.join("special://profile/Thumbnails/Video", cached_thumb[0], cached_thumb)
@@ -382,9 +380,9 @@ def get_file(url):
         log("vid_cache_file Image: " + url + "-->" + vid_cache_file)
         return vid_cache_file
     try:
-        request = urllib2.Request(clean_url)
+        request = urllib.request.Request(clean_url)
         request.add_header('Accept-encoding', 'gzip')
-        response = urllib2.urlopen(request, timeout=3)
+        response = urllib.request.urlopen(request, timeout=3)
         data = response.read()
         response.close()
         log('image downloaded: ' + clean_url)
@@ -409,7 +407,7 @@ def fetch_musicbrainz_id(artist, artist_id=-1):
     uses musicbrainz.org
     """
     base_url = "http://musicbrainz.org/ws/2/artist/?fmt=json"
-    url = '&query=artist:%s' % urllib.quote_plus(artist.encode('utf-8'))
+    url = '&query=artist:%s' % urllib.parse.quote_plus(artist.encode('utf-8'))
     results = get_JSON_response(url=base_url + url,
                                 cache_days=30,
                                 folder="MusicBrainz")
@@ -446,10 +444,10 @@ def dict_to_listitems(data=None):
     itemlist = []
     for (count, result) in enumerate(data):
         listitem = xbmcgui.ListItem('%s' % (str(count)))
-        for (key, value) in result.iteritems():
+        for (key, value) in result.items():
             if not value:
                 continue
-            value = unicode(value)
+            value = str(value)
             if key.lower() in ["name", "label"]:
                 listitem.setLabel(value)
             elif key.lower() in ["label2"]:

@@ -118,5 +118,4 @@ def get_json(method, params):
     communicate with kodi JSON-RPC
     """
     json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "%s", "params": %s, "id": 1}' % (method, json.dumps(params)))
-    json_query = unicode(json_query, 'utf-8', errors='ignore')
     return json.loads(json_query)

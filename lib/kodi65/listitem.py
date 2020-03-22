@@ -158,13 +158,13 @@ class ListItem(object):
         self._properties = properties
 
     def update_properties(self, properties):
-        self._properties.update({k: v for k, v in properties.iteritems() if v})
+        self._properties.update({k: v for k, v in properties.items() if v})
 
     def update_artwork(self, artwork):
-        self._artwork.update({k: v for k, v in artwork.iteritems() if v})
+        self._artwork.update({k: v for k, v in artwork.items() if v})
 
     def update_infos(self, infos):
-        self._infos.update({k: v for k, v in infos.iteritems() if v})
+        self._infos.update({k: v for k, v in infos.items() if v})
 
     def set_art(self, key, value):
         self._artwork[key] = value
@@ -191,29 +191,29 @@ class ListItem(object):
         return value if value else ""
 
     def get_artwork(self):
-        return {k: v for k, v in self._artwork.iteritems() if v}
+        return {k: v for k, v in self._artwork.items() if v}
 
     def get_infos(self):
-        return {k: v for k, v in self._infos.iteritems() if v}
+        return {k: v for k, v in self._infos.items() if v}
 
     def get_properties(self):
-        return {k: v for k, v in self._properties.iteritems() if v}
+        return {k: v for k, v in self._properties.items() if v}
 
     def get_listitem(self):
-        listitem = xbmcgui.ListItem(label=unicode(self.label) if self.label else "",
-                                    label2=unicode(self.label2) if self.label2 else "",
+        listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
+                                    label2=str(self.label2) if self.label2 else "",
                                     path=self.path)
-        props = {k: unicode(v) for k, v in self._properties.iteritems() if v}
-        infos = {k.lower(): v for k, v in self._infos.iteritems() if v}
+        props = {k: str(v) for k, v in self._properties.items() if v}
+        infos = {k.lower(): v for k, v in self._infos.items() if v}
         infos["path"] = self.path
         if "duration" in infos:
             props['duration(h)'] = utils.format_time(infos["duration"], "h")
             props['duration(m)'] = utils.format_time(infos["duration"], "m")
-        for key, value in props.iteritems():
-            listitem.setProperty(key, unicode(value))
-        for key, value in self.specials.iteritems():
-            listitem.setProperty(key, unicode(value))
-        artwork = {k: v for k, v in self._artwork.iteritems() if v}
+        for key, value in props.items():
+            listitem.setProperty(key, str(value))
+        for key, value in self.specials.items():
+            listitem.setProperty(key, str(value))
+        artwork = {k: v for k, v in self._artwork.items() if v}
         if artwork:
             listitem.setArt(artwork)
         if infos:
@@ -228,8 +228,8 @@ class ListItem(object):
         dct = utils.merge_dicts(self.get_properties(),
                                 self.get_artwork(),
                                 self.get_infos())
-        for k, v in dct.iteritems():
-            window.setProperty('%s%s' % (prefix, k), unicode(v))
+        for k, v in dct.items():
+            window.setProperty('%s%s' % (prefix, k), str(v))
 
 
 class AudioItem(ListItem):
@@ -269,18 +269,18 @@ class AudioItem(ListItem):
 
     def from_listitem(self, listitem):
         info = listitem.getAudioInfoTag()
-        self.label = listitem.getLabel().decode("utf-8")
-        self.path = info.getPath().decode("utf-8")
+        self.label = listitem.getLabel()
+        self.path = info.getPath()
         self._infos = {"dbid": info.GetDatabaseId(),
                        "mediatype": info.GetMediaType(),
-                       "title": info.GetTitle().decode("utf-8"),
+                       "title": info.GetTitle(),
                        "votes": info.GetVotes(),
                        "rating": info.GetRating(),
                        "userrating": info.GetUserRating(),
-                       "file": info.GetFile().decode("utf-8"),
-                       "comment": info.getComment().decode("utf-8"),
-                       "lyrics": info.getLyrics().decode("utf-8"),
-                       "genre": info.getGenre().decode("utf-8"),
+                       "file": info.GetFile(),
+                       "comment": info.getComment(),
+                       "lyrics": info.getLyrics(),
+                       "genre": info.getGenre(),
                        "lastplayed": info.getLastPlayed(),
                        "listeners": info.getListeners(),
                        "playcount": info.getPlayCount(),
@@ -329,16 +329,16 @@ class VideoItem(ListItem):
 
     def from_listitem(self, listitem):
         info = listitem.getVideoInfoTag()
-        self.label = listitem.getLabel().decode("utf-8")
-        self.path = info.getPath().decode("utf-8")
+        self.label = listitem.getLabel()
+        self.path = info.getPath()
         for provider in {"tmdb", "imdb", "trakt"}:
             self._ratings[provider] = listitem.getRating(provider)
         self._infos = {"dbid": info.getDbId(),
                        "mediatype": info.getMediaType(),
-                       "plot": info.getPlot().decode("utf-8"),
-                       "plotoutline": info.getPlotOutline().decode("utf-8"),
-                       "tvshowtitle": info.getTVShowTitle().decode("utf-8"),
-                       "title": info.getTitle().decode("utf-8"),
+                       "plot": info.getPlot(),
+                       "plotoutline": info.getPlotOutline(),
+                       "tvshowtitle": info.getTVShowTitle(),
+                       "title": info.getTitle(),
                        "votes": info.getVotes(),
                        "season": info.getSeason(),
                        "episode": info.getEpisode(),
@@ -346,13 +346,13 @@ class VideoItem(ListItem):
                        "userrating": info.getUserRating(),
                        "pictureurl": info.getPictureURL(),
                        "cast": info.getCast(),
-                       "file": info.getFile().decode("utf-8"),
-                       "trailer": info.getTrailer().decode("utf-8"),
-                       "originaltitle": info.getOriginalTitle().decode("utf-8"),
-                       "tagline": info.getTagLine().decode("utf-8"),
-                       "genre": info.getGenre().decode("utf-8"),
-                       "director": info.getDirector().decode("utf-8"),
-                       "writer": info.getWritingCredits().decode("utf-8"),
+                       "file": info.getFile(),
+                       "trailer": info.getTrailer(),
+                       "originaltitle": info.getOriginalTitle(),
+                       "tagline": info.getTagLine(),
+                       "genre": info.getGenre(),
+                       "director": info.getDirector(),
+                       "writer": info.getWritingCredits(),
                        "lastplayed": info.getLastPlayed(),
                        "premiered": info.getPremiered(),
                        "firstaired": info.getFirstAired(),
@@ -429,7 +429,7 @@ class VideoItem(ListItem):
         return self._ids
 
     def movie_from_dbid(self, dbid):
-        from LocalDB import local_db
+        from .LocalDB import local_db
         if not dbid:
             return None
         self.update_from_listitem(local_db.get_movie(dbid))

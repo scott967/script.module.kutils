@@ -34,7 +34,7 @@ KEYS = (("1", "ABC1"),
 class T9Search(object):
 
     def __init__(self, call=None, start_value="", history="Default"):
-        dialog = T9SearchDialog(u'script-script.module.kodi65-t9search.xml',
+        dialog = T9SearchDialog('script-script.module.kodi65-t9search.xml',
                                 os.path.join(os.path.dirname(__file__), "..", ".."),
                                 call=call,
                                 start_value=start_value,
@@ -190,7 +190,7 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
         result = xbmcgui.Dialog().input(heading=addon.LANG(16017),
                                         type=xbmcgui.INPUT_ALPHANUM)
         if result and result > -1:
-            self.search_str = result.decode("utf-8")
+            self.search_str = result
             self.callback(self.search_str)
             self.save_autocomplete()
 

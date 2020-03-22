@@ -56,7 +56,7 @@ def get_icon_panel(number):
     """
     items = ItemList()
     offset = number * 5 - 5
-    for i in xrange(1, 6):
+    for i in range(1, 6):
         infopanel_path = utils.get_skin_string("IconPanelItem%i.Path" % (i + offset))
         item = ListItem(label=utils.get_skin_string("IconPanelItem%i.Label" % (i + offset)),
                         path="plugin://script.extendedinfo/?info=action&&id=" + infopanel_path)
