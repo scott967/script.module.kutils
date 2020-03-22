@@ -3,22 +3,16 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-import functools
-import traceback
-
 import xbmcgui
-
 from kodi65 import utils
+import traceback
+from functools import wraps
 
 
 class BusyHandler(object):
     """
     Class to deal with busydialog handling
     """
-
     def __init__(self, *args, **kwargs):
         self.busy = 0
         self.enabled = True
@@ -63,7 +57,7 @@ class BusyHandler(object):
         """
         Decorator to show busy dialog while function is running
         """
-        @functools.wraps(func)
+        @wraps(func)
         def decorator(cls, *args, **kwargs):
             self.show_busy()
             result = None

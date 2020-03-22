@@ -3,56 +3,40 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
-import base64
-import hashlib
-import os
-import uuid
-
-import xbmc
 import xbmcaddon
+import xbmc
+import os
 import xbmcgui
-
+import base64
+import uuid
+import hashlib
 HOME = xbmcgui.Window(10000)
 
 
 class Addon(object):
-    """
-    Wrapper for xbmcaddon.Addon()
-    """
 
     def __init__(self, *args, **kwargs):
         self.addon = xbmcaddon.Addon(*args)
-        self.ID = str(self.addon.getAddonInfo('id'))
-        self.ICON = str(self.addon.getAddonInfo('icon'))
-        self.NAME = str(self.addon.getAddonInfo('name'))
-        self.FANART = str(self.addon.getAddonInfo('fanart'))
-        self.AUTHOR = str(self.addon.getAddonInfo('author'))
-        self.CHANGELOG = str(self.addon.getAddonInfo('changelog'))
-        self.DESCRIPTION = str(self.addon.getAddonInfo('description'))
-        self.DISCLAIMER = str(self.addon.getAddonInfo('disclaimer'))
-        self.VERSION = str(self.addon.getAddonInfo('version'))
-        self.PATH = str(self.addon.getAddonInfo('path'))
-        self.PROFILE = str(self.addon.getAddonInfo('profile'))
-        self.SUMMARY = str(self.addon.getAddonInfo('summary'))
-        self.TYPE = str(self.addon.getAddonInfo('type'))
+        self.ID = self.addon.getAddonInfo('id').decode("utf-8")
+        self.ICON = self.addon.getAddonInfo('icon').decode("utf-8")
+        self.NAME = self.addon.getAddonInfo('name').decode("utf-8")
+        self.FANART = self.addon.getAddonInfo('fanart').decode("utf-8")
+        self.AUTHOR = self.addon.getAddonInfo('author').decode("utf-8")
+        self.CHANGELOG = self.addon.getAddonInfo('changelog').decode("utf-8")
+        self.DESCRIPTION = self.addon.getAddonInfo('description').decode("utf-8")
+        self.DISCLAIMER = self.addon.getAddonInfo('disclaimer').decode("utf-8")
+        self.VERSION = self.addon.getAddonInfo('version').decode("utf-8")
+        self.PATH = self.addon.getAddonInfo('path').decode("utf-8")
+        self.PROFILE = self.addon.getAddonInfo('profile').decode("utf-8")
+        self.SUMMARY = self.addon.getAddonInfo('summary').decode("utf-8")
+        self.TYPE = self.addon.getAddonInfo('type').decode("utf-8")
         self.MEDIA_PATH = os.path.join(self.PATH, "resources", "skins", "Default", "media")
-        self.DATA_PATH = str(xbmc.translatePath("special://profile/addon_data/%s" % self.ID))
+        self.DATA_PATH = xbmc.translatePath("special://profile/addon_data/%s" % self.ID).decode("utf-8")
 
     def setting(self, setting_name):
-        """
-        get setting with name *setting_name
-        """
         return self.addon.getSetting(setting_name)
 
     def set_setting(self, setting_name, string):
-        """
-        set setting with name *setting_name to value *string
-        """
         self.addon.setSetting(str(setting_name), str(string))
 
     def set_password_prompt(self, setting_name):
@@ -77,9 +61,6 @@ class Addon(object):
             return decode_string(setting)
 
     def bool_setting(self, setting_name):
-        """
-        get bool setting (either True or False)
-        """
         return self.addon.getSetting(setting_name) == "true"
 
     def reload_addon(self):
@@ -112,9 +93,6 @@ def encode_string(clear):
 
 
 def decode_string(enc):
-    """
-    return decoded string (encoded with uuid)
-    """
     dec = []
     key = str(uuid.getnode())
     enc = base64.urlsafe_b64decode(enc)

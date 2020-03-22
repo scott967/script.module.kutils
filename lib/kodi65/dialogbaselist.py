@@ -3,16 +3,13 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import xbmc
 import xbmcgui
 
-from kodi65 import ActionHandler
 from kodi65 import addon
 from kodi65 import busy
-from kodi65.T9Search import T9Search
+from kodi65 import ActionHandler
+from T9Search import T9Search
 
 ch = ActionHandler()
 

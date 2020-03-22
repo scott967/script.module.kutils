@@ -3,19 +3,12 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
-import xbmc
 import xbmcgui
-
+import xbmc
 from kodi65 import utils
 
 
 class ListItem(object):
-    props = []
     ICON_OVERLAY_NONE = 0       # No overlay icon
     ICON_OVERLAY_RAR = 1        # Compressed *.rar files
     ICON_OVERLAY_ZIP = 2        # Compressed *.zip files
@@ -97,9 +90,6 @@ class ListItem(object):
             return self.__getitem__(key)
         except KeyError:
             return fallback
-
-    def iteritems(self):
-        return self._infos.iteritems()
 
     def update_from_listitem(self, listitem):
         if not listitem:
@@ -210,19 +200,19 @@ class ListItem(object):
         return {k: v for k, v in self._properties.iteritems() if v}
 
     def get_listitem(self):
-        listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
-                                    label2=str(self.label2) if self.label2 else "",
+        listitem = xbmcgui.ListItem(label=unicode(self.label) if self.label else "",
+                                    label2=unicode(self.label2) if self.label2 else "",
                                     path=self.path)
-        props = {k: str(v) for k, v in self._properties.iteritems() if v}
+        props = {k: unicode(v) for k, v in self._properties.iteritems() if v}
         infos = {k.lower(): v for k, v in self._infos.iteritems() if v}
         infos["path"] = self.path
         if "duration" in infos:
             props['duration(h)'] = utils.format_time(infos["duration"], "h")
             props['duration(m)'] = utils.format_time(infos["duration"], "m")
         for key, value in props.iteritems():
-            listitem.setProperty(key, str(value))
+            listitem.setProperty(key, unicode(value))
         for key, value in self.specials.iteritems():
-            listitem.setProperty(key, str(value))
+            listitem.setProperty(key, unicode(value))
         artwork = {k: v for k, v in self._artwork.iteritems() if v}
         if artwork:
             listitem.setArt(artwork)
@@ -239,7 +229,7 @@ class ListItem(object):
                                 self.get_artwork(),
                                 self.get_infos())
         for k, v in dct.iteritems():
-            window.setProperty('%s%s' % (prefix, k), str(v))
+            window.setProperty('%s%s' % (prefix, k), unicode(v))
 
 
 class AudioItem(ListItem):
@@ -338,9 +328,6 @@ class VideoItem(ListItem):
                           "", ""])
 
     def from_listitem(self, listitem):
-        """
-        xbmcgui listitem -> kodi65 listitem
-        """
         info = listitem.getVideoInfoTag()
         self.label = listitem.getLabel().decode("utf-8")
         self.path = info.getPath().decode("utf-8")
@@ -457,16 +444,3 @@ class GameItem(ListItem):
         self.type = "game"
         super(GameItem, self).__init__(*args, **kwargs)
 
-    def from_listitem(self, listitem):
-        info = listitem.getGameInfoTag()
-        self.label = listitem.getLabel().decode("utf-8")
-        self.path = info.getPath().decode("utf-8")
-        self._infos = {"title": info.GetDatabaseId(),
-                       "platform": info.GetMediaType(),
-                       "genres": info.GetTitle().decode("utf-8"),
-                       "publisher": info.GetVotes(),
-                       "developer": info.GetRating(),
-                       "overview": info.GetUserRating(),
-                       "year": info.GetFile().decode("utf-8"),
-                       "gameclient": info.getComment().decode("utf-8")}
-        self._properties = {key: listitem.getProperty(key) for key in self.props}

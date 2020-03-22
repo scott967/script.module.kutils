@@ -3,29 +3,23 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
-import datetime
-import functools
-import hashlib
+from functools import wraps
+import threading
 import json
 import os
-import re
-import threading
+import datetime
 import time
+import re
+import hashlib
 import urllib
-
+import urllib2
 import xbmc
 import xbmcgui
 import xbmcvfs
+import requests
 
 import YDStreamExtractor
 from kodi65 import addon
-
-import requests
 
 
 def youtube_info_by_id(youtube_id):
@@ -81,9 +75,6 @@ def pp(string):
 
 
 def dictfind(lst, key, value):
-    """
-    searches through a list of dicts, returns dict where dict[key] = value
-    """
     for i, dic in enumerate(lst):
         if dic[key] == value:
             return dic
@@ -113,18 +104,10 @@ def check_version():
 
 
 def get_skin_string(name):
-    """
-    get String with name *name
-    """
-
     return xbmc.getInfoLabel("Skin.String(%s)").decode("utf-8")
 
 
 def set_skin_string(name, value):
-    """
-    Set String *name to value *value
-    """
-
     xbmc.executebuiltin("Skin.SetString(%s, %s)" % (name, value))
 
 
@@ -132,7 +115,7 @@ def run_async(func):
     """
     Decorator to run a function in a separate thread
     """
-    @functools.wraps(func)
+    @wraps(func)
     def async_func(*args, **kwargs):
         func_hl = threading.Thread(target=func,
                                    args=args,
@@ -144,10 +127,6 @@ def run_async(func):
 
 
 def contextmenu(options):
-    """
-    pass list of tuples (index, label), get index
-    """
-
     index = xbmcgui.Dialog().contextmenu(list=[i[1] for i in options])
     if index > -1:
         return [i[0] for i in options][index]
@@ -169,18 +148,12 @@ def extract_youtube_id(raw_string):
 
 
 def download_video(youtube_id):
-    """
-    download youtube video with id *youtube_id
-    """
     vid = YDStreamExtractor.getVideoInfo(youtube_id,
                                          quality=1)
     YDStreamExtractor.handleDownload(vid)
 
 
 def notify(header="", message="", icon=addon.ICON, time=5000, sound=True):
-    """
-    show kodi notification dialog
-    """
     xbmcgui.Dialog().notification(heading=header,
                                   message=message,
                                   icon=icon,
@@ -233,11 +206,8 @@ def format_time(time, time_format=None):
 
 
 def input_userrating(preselect=-1):
-    """
-    opens selectdialog and returns chosen userrating.
-    """
     index = xbmcgui.Dialog().select(heading=addon.LANG(38023),
-                                    list=[addon.LANG(10035)] + [str(i) for i in range(1, 11)],
+                                    list=[addon.LANG(10035)] + [str(i) for i in xrange(1, 11)],
                                     preselect=preselect)
     if index == preselect:
         return -1
@@ -277,9 +247,6 @@ def read_from_file(path, raw=False):
 
 
 def create_listitems(data=None, preload_images=0):
-    """
-    returns list with xbmcgui listitems
-    """
     return [item.get_listitem() for item in data] if data else []
 
 
@@ -288,9 +255,6 @@ def translate_path(*args):
 
 
 def get_infolabel(name):
-    """
-    returns infolabel with *name
-    """
     return xbmc.getInfoLabel(name).decode("utf-8")
 
 
@@ -338,9 +302,6 @@ def get_http(url, headers=False):
 
 
 def post(url, values, headers):
-    """
-    retuns answer to post request
-    """
     request = requests.post(url=url,
                             data=json.dumps(values),
                             headers=headers)
@@ -348,9 +309,6 @@ def post(url, values, headers):
 
 
 def delete(url, values, headers):
-    """
-    returns answer to delete request
-    """
     request = requests.delete(url=url,
                               data=json.dumps(values),
                               headers=headers)
@@ -403,7 +361,8 @@ def dict_to_windowprops(data=None, prefix="", window_id=10000):
     if not data:
         return None
     for (key, value) in data.iteritems():
-        window.setProperty('%s%s' % (prefix, key), str(value))
+        value = unicode(value)
+        window.setProperty('%s%s' % (prefix, key), value)
 
 
 def get_file(url):
@@ -423,11 +382,11 @@ def get_file(url):
         log("vid_cache_file Image: " + url + "-->" + vid_cache_file)
         return vid_cache_file
     try:
-        r = requests.get(clean_url, stream=True)
-        # request.add_header('Accept-encoding', 'gzip')
-        if r.status_code != 200:
-            return ""
-        data = r.content
+        request = urllib2.Request(clean_url)
+        request.add_header('Accept-encoding', 'gzip')
+        response = urllib2.urlopen(request, timeout=3)
+        data = response.read()
+        response.close()
         log('image downloaded: ' + clean_url)
     except Exception:
         log('image download failed: ' + clean_url)
@@ -454,11 +413,10 @@ def fetch_musicbrainz_id(artist, artist_id=-1):
     results = get_JSON_response(url=base_url + url,
                                 cache_days=30,
                                 folder="MusicBrainz")
-    if results and results.get("artists") and len(results["artists"]) > 0:
+    if results and len(results["artists"]) > 0:
         log("found artist id for %s: %s" % (artist, results["artists"][0]["id"]))
         return results["artists"][0]["id"]
     else:
-        log("no mbid found for %s" % artist)
         return None
 
 
@@ -491,7 +449,7 @@ def dict_to_listitems(data=None):
         for (key, value) in result.iteritems():
             if not value:
                 continue
-            value = str(value)
+            value = unicode(value)
             if key.lower() in ["name", "label"]:
                 listitem.setLabel(value)
             elif key.lower() in ["label2"]:

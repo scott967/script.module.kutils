@@ -3,13 +3,7 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
 import json
-
 import xbmc
 
 
@@ -29,25 +23,16 @@ def play_media(media_type, dbid, resume=True):
 
 
 def get_directory(path, media_type="files"):
-    """
-    get list with items from directory *path.
-    """
     return get_json(method="Files.GetDirectory",
                     params={"directory": path, "media": media_type})
 
 
 def send_text(text, close_keyboard=True):
-    """
-    SendText JSON message
-    """
     return get_json(method="Input.SendText",
                     params={"text": text, "done": "true" if close_keyboard else "false"})
 
 
 def get_artists(properties=None):
-    """
-    return list of artists from database
-    """
     properties = properties if properties else []
     data = get_json(method="AudioLibrary.GetArtists",
                     params={"properties": properties})
@@ -118,17 +103,11 @@ def set_userrating(media_type, dbid, rating):
 
 
 def get_favourites():
-    """
-    get list with favourites
-    """
     return get_json(method="Favourites.GetFavourites",
                     params={"type": None, "properties": ["path", "thumbnail", "window", "windowparameter"]})
 
 
 def set_art(media_type, art, dbid):
-    """
-    set artwork via json
-    """
     return get_json(method="VideoLibrary.Set%sDetails" % media_type,
                     params={"art": art,
                             "%sid" % media_type.lower(): int(dbid)})
@@ -139,5 +118,5 @@ def get_json(method, params):
     communicate with kodi JSON-RPC
     """
     json_query = xbmc.executeJSONRPC('{"jsonrpc": "2.0", "method": "%s", "params": %s, "id": 1}' % (method, json.dumps(params)))
-    json_query = str(json_query, 'utf-8', errors='ignore')
+    json_query = unicode(json_query, 'utf-8', errors='ignore')
     return json.loads(json_query)

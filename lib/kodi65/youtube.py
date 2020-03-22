@@ -3,17 +3,12 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
-import itertools
 import urllib
+import itertools
 
-from kodi65 import ItemList
-from kodi65 import VideoItem
 from kodi65 import utils
+from kodi65 import VideoItem
+from kodi65 import ItemList
 
 YT_KEY = 'AIzaSyB-BOZ_o09NLVwq_lMskvvj1olDkFI4JK0'
 BASE_URL = "https://www.googleapis.com/youtube/v3/"
@@ -57,9 +52,9 @@ def handle_videos(results, extended=False):
             if not item.get_property("youtube_id") == ext_item['id']:
                 continue
             details = ext_item['contentDetails']
-            stats = ext_item.get('statistics')
-            likes = stats.get('likeCount') if stats else None
-            dislikes = stats.get('dislikeCount') if stats else None
+            stats = ext_item['statistics']
+            likes = stats.get('likeCount')
+            dislikes = stats.get('dislikeCount')
             item.update_infos({"duration": get_duration_in_seconds(details['duration'])})
             props = {"duration": details['duration'][2:].lower(),
                      "formatted_duration": get_formatted_duration(details['duration']),
@@ -176,7 +171,7 @@ def get_data(method, params=None, cache_days=0.5):
     """
     params = params if params else {}
     params["key"] = YT_KEY
-    params = {k: str(v) for k, v in params.iteritems() if v}
+    params = {k: unicode(v).encode('utf-8') for k, v in params.iteritems() if v}
     url = "{base_url}{method}?{params}".format(base_url=BASE_URL,
                                                method=method,
                                                params=urllib.urlencode(params))
@@ -199,9 +194,6 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, p
     results = get_data(method="search",
                        params=utils.merge_dicts(params, filters if filters else {}))
     if not results:
-        return None
-    if "error" in results:
-        utils.pp(results)
         return None
     if media_type == "video":
         listitems = handle_videos(results["items"], extended=extended)
