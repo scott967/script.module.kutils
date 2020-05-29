@@ -288,7 +288,7 @@ def get_http(url, headers=False):
     succeed = 0
     if not headers:
         headers = {'User-agent': 'Kodi/17.0 ( phil65@kodi.tv )'}
-    while (succeed < 2) and (not xbmc.abortRequested):
+    while (succeed < 2) and (not xbmc.Monitor().abortRequested()):
         try:
             request = requests.get(url, headers=headers)
             return request.text
