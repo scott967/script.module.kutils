@@ -4,7 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 import xbmcaddon
-import xbmc
+import xbmc, xbmcvfs
 import os
 import xbmcgui
 import base64
@@ -31,7 +31,7 @@ class Addon(object):
         self.SUMMARY = self.addon.getAddonInfo('summary')
         self.TYPE = self.addon.getAddonInfo('type')
         self.MEDIA_PATH = os.path.join(self.PATH, "resources", "skins", "Default", "media")
-        self.DATA_PATH = xbmc.translatePath("special://profile/addon_data/%s" % self.ID)
+        self.DATA_PATH = xbmcvfs.translatePath("special://profile/addon_data/%s" % self.ID)
 
     def setting(self, setting_name):
         return self.addon.getSetting(setting_name)
