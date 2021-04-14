@@ -2,7 +2,8 @@
 <addon id="script.module.kodi65" name="Kodi65 Library" version="1.2.1+matrix.3" provider-name="Philipp Temminghoff (phil65)">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
-		<import addon="script.module.youtube.dl" version="21.204.0+matrix.1"/>
+		<import addon="xbmc.addon" version="19.0.0"/>
+		<import addon="script.module.youtube.dl" version="21.303.0+matrix.1"/>
 		<import addon="script.module.pil" version="5.1.0"/>
 		<import addon="script.module.autocompletion" version="2.0.2"/>
 		<import addon="script.module.requests" version="2.22.0+matrix.1"/>
