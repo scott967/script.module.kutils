@@ -46,7 +46,12 @@ class LocalDB(object):
         get list of artists from db which are similar to artist with *artist_id
         based on LastFM online data
         """
-        import LastFM
+        try:
+            import LastFM
+        except ImportError:
+            utils.log(f'Could not import LASTFM. Is this installed and on Kodi\'s python path?')
+            return None
+
         simi_artists = LastFM.get_similar_artists(artist_id)
         if simi_artists is None:
             utils.log('Last.fm didn\'t return proper response')
