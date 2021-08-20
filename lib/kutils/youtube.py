@@ -184,7 +184,8 @@ def get_data(method, params=None, cache_days=0.5):
                                    folder="YouTube")
 
 
-def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, page="", filters=None, media_type="video", api_key=""):
+def search(search_str="", hd="", orderby="relevance", limit=40, extended=True,
+           page="", filters=None, media_type="video", api_key=""):
     """
     returns ItemList according to search term, filters etc.
     """
@@ -198,8 +199,9 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, p
               "key" : api_key}
     results = get_data(method="search",
                        params=utils.merge_dicts(params, filters if filters else {}))
-    if not results or not 'items' in results.keys():
+    if not results or 'items' not in results.keys():
         return None
+    listitems: ItemList = ItemList()
     if media_type == "video":
         listitems = handle_videos(results["items"], extended=extended, api_key=api_key)
     elif media_type == "playlist":
