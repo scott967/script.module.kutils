@@ -44,7 +44,10 @@ class T9Search(object):
 
 
 class T9SearchDialog(xbmcgui.WindowXMLDialog):
-
+    """
+    T9 Search dialog class.dialog
+    params for constructor: "call", "start_value", "history"
+    """
     def __init__(self, *args, **kwargs):
         self.callback = kwargs.get("call")
         self.search_str = kwargs.get("start_value", "")
@@ -103,11 +106,17 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
     @ch.action("parentfolder", "*")
     @ch.action("previousmenu", "*")
     def close_dialog(self, control_id):
+        """
+        save autocompletion and close dialog
+        """
         self.save_autocomplete()
         self.close()
 
     @ch.action("number0", "*")
     def set_0(self, control_id):
+        """
+        deal with 0 action (either via gui or via remotekeys)
+        """
         listitem = self.getControl(control_id).getListItem(10)
         self.set_t9_letter(letters=listitem.getProperty("value"),
                            number=listitem.getProperty("key"),
@@ -123,6 +132,9 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
     @ch.action("number8", "*")
     @ch.action("number9", "*")
     def t_9_button_click(self, control_id):
+        """
+        deal with number actions (either via gui or via remotekeys)
+        """
         item_id = self.action_id - xbmcgui.REMOTE_1
         listitem = self.getControl(control_id).getListItem(item_id)
         self.set_t9_letter(letters=listitem.getProperty("value"),
@@ -148,6 +160,9 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
         self.getControl(9091).addItems(utils.dict_to_listitems(listitems))
 
     def save_autocomplete(self):
+        """
+        save last searches
+        """
         if not self.search_str:
             return None
         listitem = {"label": self.search_str}
@@ -186,6 +201,9 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
         self.get_autocomplete_labels_async()
 
     def use_classic_search(self):
+        """
+        open classic keyboard dialog and call callback when result is valid
+        """
         self.close()
         result = xbmcgui.Dialog().input(heading=addon.LANG(16017),
                                         type=xbmcgui.INPUT_ALPHANUM)

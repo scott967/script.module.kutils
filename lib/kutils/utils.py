@@ -73,6 +73,9 @@ def pp(string):
 
 
 def dictfind(lst, key, value):
+    """
+    searches through a list of dicts, returns dict where dict[key] = value
+    """
     for i, dic in enumerate(lst):
         if dic[key] == value:
             return dic
@@ -102,10 +105,16 @@ def check_version():
 
 
 def get_skin_string(name):
+    """
+    get String with name *name
+    """
     return xbmc.getInfoLabel("Skin.String(%s)")
 
 
 def set_skin_string(name, value):
+    """
+    Set String *name to value *value
+    """
     xbmc.executebuiltin("Skin.SetString(%s, %s)" % (name, value))
 
 
@@ -125,6 +134,9 @@ def run_async(func):
 
 
 def contextmenu(options):
+    """
+    pass list of tuples (index, label), get index
+    """
     index = xbmcgui.Dialog().contextmenu(list=[i[1] for i in options])
     if index > -1:
         return [i[0] for i in options][index]
@@ -146,12 +158,18 @@ def extract_youtube_id(raw_string):
 
 
 def download_video(youtube_id):
+    """
+    download youtube video with id *youtube_id
+    """
     vid = YDStreamExtractor.getVideoInfo(youtube_id,
                                          quality=1)
     YDStreamExtractor.handleDownload(vid)
 
 
 def notify(header="", message="", icon=addon.ICON, time=5000, sound=True):
+    """
+    show kodi notification dialog
+    """
     xbmcgui.Dialog().notification(heading=header,
                                   message=message,
                                   icon=icon,
@@ -204,6 +222,9 @@ def format_time(time, time_format=None):
 
 
 def input_userrating(preselect=-1):
+    """
+    opens selectdialog and returns chosen userrating.
+    """
     index = xbmcgui.Dialog().select(heading=addon.LANG(38023),
                                     list=[addon.LANG(10035)] + [str(i) for i in range(1, 11)],
                                     preselect=preselect)
@@ -245,6 +266,9 @@ def read_from_file(path, raw=False):
 
 
 def create_listitems(data=None, preload_images=0):
+    """
+    returns list with xbmcgui listitems
+    """
     return [item.get_listitem() for item in data] if data else []
 
 
@@ -253,6 +277,9 @@ def translate_path(*args):
 
 
 def get_infolabel(name):
+    """
+    returns infolabel with *name
+    """
     return xbmc.getInfoLabel(name)
 
 
@@ -300,6 +327,9 @@ def get_http(url, headers=False):
 
 
 def post(url, values, headers):
+    """
+    retuns answer to post request
+    """
     request = requests.post(url=url,
                             data=json.dumps(values),
                             headers=headers)
@@ -307,6 +337,9 @@ def post(url, values, headers):
 
 
 def delete(url, values, headers):
+    """
+    returns answer to delete request
+    """
     request = requests.delete(url=url,
                               data=json.dumps(values),
                               headers=headers)

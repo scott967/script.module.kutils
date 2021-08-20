@@ -328,6 +328,9 @@ class VideoItem(ListItem):
                           "", ""])
 
     def from_listitem(self, listitem):
+        """
+        xbmcgui listitem -> kodi65 listitem
+        """
         info = listitem.getVideoInfoTag()
         self.label = listitem.getLabel()
         self.path = info.getPath()
