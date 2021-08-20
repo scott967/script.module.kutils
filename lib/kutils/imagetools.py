@@ -3,9 +3,10 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-import urllib.request, urllib.parse, urllib.error
 import os
 import threading
+import urllib.parse
+
 import PIL.Image
 import PIL.ImageFilter
 
