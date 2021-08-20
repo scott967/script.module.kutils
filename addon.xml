@@ -1,26 +1,27 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.module.kodi65" name="Kodi65 Library" version="1.2.1+matrix.4"
-	   provider-name="Frank Feuerbacher (fbacher)">
+<addon id="script.module.kutils" name="Utilities Library" version="1.2.1+matrix.6"
+	   provider-name="Philipp Temminghoff (phil65), Frank Feuerbacher (fbacher)">
 	<requires>
 		<import addon="xbmc.python" version="3.0.0"/>
-		<import addon="xbmc.addon" version="19.0.0"/>
+		<import addon="xbmc.addon" version="19.1.0"/>
 		<import addon="script.module.youtube.dl" version="21.303.0+matrix.1"/>
 		<import addon="script.module.pil" version="5.1.0"/>
-		<import addon="script.module.autocompletion" version="2.0.2"/>
-		<import addon="script.module.requests" version="2.22.0+matrix.1"/>
+		<import addon="script.module.autocompletion" version="2.0.3"/>
+		<import addon="script.module.requests" version="2.25.1+matrix.1"/>
 	</requires>
 	<extension point="xbmc.python.module" library="lib" />
 	<extension point="xbmc.addon.metadata">
 		<summary lang="en">Helper module</summary>
-		<description lang="en">Helper module for all kind of stuff</description>
+		<description lang="en">Helper module for commonly needed tasks</description>
 		<platform>all</platform>
 		<license>GPL-2.1</license>
-		<source>https://github.com/fbacher/script.module.kodi65</source>
-		<news>04/14/2021 Bump dependency versions (Frank Feuerbacher)
-			Forked from original work by scot967 and phil65 on github.
-			Python3 ver Adjust to latest core changes, bugfixes, 
-			API extensions by scott967
+		<source>https://github.com/fbacher/script.module.kutils</source>
+		<news>
+			08/18/2021 Forked from phil65 master prior to python3/future
+			changes. Renamed addon, updated dependencies, adjust to
+			latest kodi API changes.
 		</news>
+
 	</extension>
 	<assets>
 		<icon>resources/icon.png</icon>

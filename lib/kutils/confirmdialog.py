@@ -6,7 +6,7 @@
 import xbmcgui
 import xbmc
 
-from kodi65 import addon
+from kutils import addon
 
 ID_BUTTON_YES = 11
 ID_BUTTON_NO = 10

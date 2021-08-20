@@ -6,8 +6,8 @@
 import xbmc
 import xbmcgui
 
-from kodi65 import busy
-from kodi65 import utils
+from kutils import busy
+from kutils import utils
 
 
 class VideoPlayer(xbmc.Player):

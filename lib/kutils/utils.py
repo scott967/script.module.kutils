@@ -19,7 +19,7 @@ import xbmcvfs
 import requests
 
 import YDStreamExtractor
-from kodi65 import addon
+from kutils import addon
 
 
 def youtube_info_by_id(youtube_id):

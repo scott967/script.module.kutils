@@ -5,7 +5,7 @@
 
 import xbmcgui
 import xbmc
-from kodi65 import utils
+from kutils import utils
 
 
 class ListItem(object):

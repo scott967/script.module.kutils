@@ -7,9 +7,9 @@ import urllib.request, urllib.parse, urllib.error
 import itertools
 import html
 
-from kodi65 import utils
-from kodi65 import VideoItem
-from kodi65 import ItemList
+from kutils import utils
+from kutils import VideoItem
+from kutils import ItemList
 
 YT_KEY = ''
 BASE_URL = "https://www.googleapis.com/youtube/v3/"

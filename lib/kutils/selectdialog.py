@@ -6,7 +6,7 @@
 import xbmcgui
 import xbmc
 
-from kodi65 import addon
+from kutils import addon
 
 C_LABEL_HEADER = 1
 C_LIST_SIMPLE = 3

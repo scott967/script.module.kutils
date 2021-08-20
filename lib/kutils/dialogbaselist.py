@@ -6,11 +6,11 @@
 import xbmc
 import xbmcgui
 
-from kodi65 import addon
-from kodi65 import busy
-from kodi65 import ActionHandler
-from .T9Search import T9Search
-from kodi65 import utils
+from kutils import addon
+from kutils import busy
+from kutils import ActionHandler
+from kutils.T9Search import T9Search
+from kutils import utils
 
 ch = ActionHandler()
 
@@ -95,10 +95,10 @@ class DialogBaseList(object):
         viewtype = addon.setting("viewtype_selection")
         self.cur_viewtype = DialogBaseList.viewid.get(xbmc.getInfoLabel('Container.Viewmode'))
         try:
-            utils.log('module.kodi65.current viewtype: ' + self.cur_viewtype)
+            utils.log('module.kutils.current viewtype: ' + self.cur_viewtype)
         except:
-            utils.log('module.kodi65.current viewtype none: ' + xbmc.getInfoLabel('Container.Viewmode'))
-        utils.log('module.kodi65.viewtype: ' + viewtype)
+            utils.log('module.kutils.current viewtype none: ' + xbmc.getInfoLabel('Container.Viewmode'))
+        utils.log('module.utils.viewtype: ' + viewtype)
         if viewtype:
             xbmc.executebuiltin("Container.SetViewMode(%s)" % viewtype)
         self.update_ui()

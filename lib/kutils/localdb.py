@@ -6,11 +6,11 @@
 import json
 import itertools
 
-from kodi65 import kodijson
-from kodi65 import addon
-from kodi65 import utils
-from kodi65 import VideoItem
-from kodi65 import ItemList
+from kutils import kodijson
+from kutils import addon
+from kutils import utils
+from kutils import VideoItem
+from kutils import ItemList
 
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 MOVIE_PROPS = ["title", "genre", "year", "rating", "director", "trailer",

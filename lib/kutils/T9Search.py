@@ -9,9 +9,9 @@ import xbmcgui
 import os
 from collections import deque
 import ast
-from kodi65 import utils
-from kodi65 import addon
-from kodi65 import ActionHandler
+from kutils import utils
+from kutils import addon
+from kutils import ActionHandler
 import AutoCompletion
 
 ch = ActionHandler()
@@ -34,7 +34,7 @@ KEYS = (("1", "ABC1"),
 class T9Search(object):
 
     def __init__(self, call=None, start_value="", history="Default"):
-        dialog = T9SearchDialog('script-script.module.kodi65-t9search.xml',
+        dialog = T9SearchDialog('script-script.module.kutils-t9search.xml',
                                 os.path.join(os.path.dirname(__file__), "..", ".."),
                                 call=call,
                                 start_value=start_value,

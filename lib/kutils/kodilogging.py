@@ -20,7 +20,7 @@
 import logging
 import xbmc
 import xbmcaddon
-from kodi65 import addon
+from kutils import addon
 
 
 class KodiLogHandler(logging.StreamHandler):

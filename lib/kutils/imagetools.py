@@ -12,8 +12,8 @@ import PIL.ImageFilter
 import xbmc
 import xbmcvfs
 
-from kodi65 import addon
-from kodi65 import utils
+from kutils import addon
+from kutils import utils
 
 THUMBS_CACHE_PATH = utils.translate_path("special://profile/Thumbnails/Video")
 IMAGE_PATH = os.path.join(addon.DATA_PATH, "images")
