@@ -5,6 +5,8 @@
 
 import time
 from threading import Timer
+
+import xbmc
 import xbmcgui
 import os
 from collections import deque
@@ -143,8 +145,9 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
 
     @utils.run_async
     def update_search_label_async(self):
-        while True:
-            time.sleep(1)
+        monitor: xbmc.Monitor = xbmc.Monitor()
+        while not monitor.waitForAbort(1.0):
+            # TODO:  Blink every second (probably a better way to do this, like animation)
             if int(time.time()) % 2 == 0:
                 self.getControl(600).setLabel("[B]%s[/B]_" % self.search_str)
             else:
