@@ -11,14 +11,15 @@ from kutils import utils
 from kutils import VideoItem
 from kutils import ItemList
 
-YT_KEY = ''
 BASE_URL = "https://www.googleapis.com/youtube/v3/"
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 
 
 def handle_videos(results, extended=False, api_key=''):
     """
-    process video api result to ItemList
+    Process video api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
     """
     videos = ItemList(content_type="videos")
     for item in results:
@@ -104,6 +105,9 @@ def get_formatted_duration(duration):
 def handle_playlists(results, api_key=''):
     """
     process playlist api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
+
     """
     playlists = ItemList(content_type="videos")
     for item in results:
@@ -138,6 +142,9 @@ def handle_playlists(results, api_key=''):
 def handle_channels(results, api_key=''):
     """
     process channel api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
+
     """
     channels = ItemList(content_type="videos")
     for item in results:
@@ -188,6 +195,8 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True,
            page="", filters=None, media_type="video", api_key=""):
     """
     returns ItemList according to search term, filters etc.
+
+    :param api_key: api_key to pass to YouTube
     """
     params = {"part": "id,snippet",
               "maxResults": limit,
