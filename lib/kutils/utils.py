@@ -27,9 +27,8 @@ def youtube_info_by_id(youtube_id):
     if not vid:
         return None, None
     url = vid.streamURL()
-    listitem = xbmcgui.ListItem(label=vid.title,
-                                thumbnailImage=vid.thumbnail,
-                                path=url)
+    listitem = xbmcgui.ListItem(label=vid.title, path=url)
+    listitem.setArt({'thumb': vid.thumbnail})
     listitem.setInfo(type='video',
                      infoLabels={"genre": vid.sourceName,
                                  "path": url,
