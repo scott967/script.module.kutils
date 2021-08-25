@@ -30,15 +30,17 @@ class VideoPlayer(xbmc.Player):
         vid = utils.get_youtube_info(youtube_id)
         if not vid:
             return None, None
-        listitem = xbmcgui.ListItem(label=vid.title,
-                                    thumbnailImage=vid.thumbnail)
+        listitem = xbmcgui.ListItem(label=vid.title)
+        listitem.setArt({'thumb': vid.thumbnail})
         listitem.setInfo(type='video',
                          infoLabels={"genre": vid.sourceName,
                                      "plot": vid.description})
         return vid.streamURL(), listitem
 
     def wait_for_video_end(self):
-        xbmc.sleep(500)
-        while not self.stopped:
-            xbmc.sleep(100)
+        monitor: xbmc.Monitor = xbmc.Monitor()
+        while not monitor.waitForAbort(0.1):
+            if self.stopped:
+                break
+
         self.stopped = False
