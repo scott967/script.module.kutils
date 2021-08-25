@@ -46,12 +46,21 @@ class LocalDB(object):
         get list of artists from db which are similar to artist with *artist_id
         based on LastFM online data
         """
+
+        '''
+        TODO:  This needs to be rectified! Need to remove dependency upon
+               caller having LastFM defined.
+               Either:
+                 * Move LastFM in whole, or in part here
+                 * Have callback and be agnostic to implementation, just api
+                 * Eliminate this method
+        '''
         try:
             import LastFM
         except ImportError:
-            utils.log(f'Could not import LASTFM. Is this installed and on Kodi\'s python path?')
+            utils.log(f'Could not import LASTFM. Call only supported from'
+                      f' ExtendedInfo add-on')
             return None
-
         simi_artists = LastFM.get_similar_artists(artist_id)
         if simi_artists is None:
             utils.log('Last.fm didn\'t return proper response')
