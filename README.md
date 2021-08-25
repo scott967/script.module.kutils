@@ -11,3 +11,8 @@ migration to Python 3 and added api_key argument to youtube calls.
 
 Maintenance assumed by Frank Feuerbacher (https://github.com/fbacher/script.module.kutils)
 Updated Dependencies and renamed add-on to conform with Kodi naming rules.
+
+Changes:
+1.2.1+matrix.7
+Hard-coded Youtube API key eliminated. Add-ons must supply their own api-key as
+an argument. Impacts youtube.py
