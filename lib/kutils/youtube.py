@@ -64,7 +64,7 @@ def handle_videos(results, extended=False, api_key=''):
                      "dimension": details['dimension'],
                      "definition": details['definition'],
                      "caption": details['caption'],
-                     "viewcount": utils.millify(int(stats['viewCount'])),
+                     "viewcount": utils.millify(int(stats.get('viewCount', 0))),
                      "likes": likes,
                      "dislikes": dislikes}
             item.update_properties(props)
@@ -210,6 +210,10 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True,
                        params=utils.merge_dicts(params, filters if filters else {}))
     if not results or 'items' not in results.keys():
         return None
+	
+	# Give initial value to keep IDE happy as well as in case we drop through all
+	# choices
+	
     listitems: ItemList = ItemList()
     if media_type == "video":
         listitems = handle_videos(results["items"], extended=extended, api_key=api_key)
