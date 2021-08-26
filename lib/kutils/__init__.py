@@ -4,6 +4,7 @@
 # This program is Free Software see LICENSE file for details
 
 from kutils.kodiaddon import Addon
+
 addon = Addon()
 
 from kutils.listitem import ListItem, VideoItem, AudioItem
@@ -14,6 +15,7 @@ from kutils.kodilogging import KodiLogHandler, config
 from kutils.dialogbaselist import DialogBaseList
 from kutils.localdb import LocalDB
 from kutils.player import VideoPlayer
+from kutils.abs_last_fm import AbstractLastFM
 
-local_db = LocalDB()
+local_db = LocalDB(last_fm=AbstractLastFM())
 player = VideoPlayer()

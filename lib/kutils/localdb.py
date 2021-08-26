@@ -11,6 +11,7 @@ from kutils import addon
 from kutils import utils
 from kutils import VideoItem
 from kutils import ItemList
+from kutils.abs_last_fm import AbstractLastFM
 
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 MOVIE_PROPS = ["title", "genre", "year", "rating", "director", "trailer",
@@ -29,10 +30,19 @@ TV_PROPS = ["title", "genre", "year", "rating", "plot",
 
 class LocalDB:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, last_fm: AbstractLastFM, *args, **kwargs):
+        """
+
+        :param last_fm: reference to implementation of AbstractLastFM
+        :param args:
+        :param kwargs:
+        """
         self.info = {}
         self.artists = []
         self.albums = []
+        self.last_fm = last_fm
+        if last_fm is None:
+            self.last_fm = AbstractLastFM()
 
     def get_artists(self):
         """
@@ -46,22 +56,7 @@ class LocalDB:
         get list of artists from db which are similar to artist with *artist_id
         based on LastFM online data
         """
-
-        '''
-        TODO:  This needs to be rectified! Need to remove dependency upon
-               caller having LastFM defined.
-               Either:
-                 * Move LastFM in whole, or in part here
-                 * Have callback and be agnostic to implementation, just api
-                 * Eliminate this method
-        '''
-        try:
-            import LastFM
-        except ImportError:
-            utils.log(f'Could not import LASTFM. Call only supported from'
-                      f' ExtendedInfo add-on')
-            return None
-        simi_artists = LastFM.get_similar_artists(artist_id)
+        simi_artists = self.last_fm.get_similar_artists(artist_id)
         if simi_artists is None:
             utils.log('Last.fm didn\'t return proper response')
             return None
