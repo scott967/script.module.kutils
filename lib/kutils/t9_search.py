@@ -33,7 +33,7 @@ KEYS = (("1", "ABC1"),
         ("KEYB", "CLASSIC"))
 
 
-class T9Search(object):
+class T9Search:
 
     def __init__(self, call=None, start_value="", history="Default"):
         dialog = T9SearchDialog('script-script.module.kutils-t9search.xml',
