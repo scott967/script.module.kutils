@@ -27,7 +27,7 @@ TV_PROPS = ["title", "genre", "year", "rating", "plot",
             "dateadded", "tag", "art", "userrating", "ratings", "uniqueid", "runtime"]
 
 
-class LocalDB(object):
+class LocalDB:
 
     def __init__(self, *args, **kwargs):
         self.info = {}

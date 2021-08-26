@@ -51,7 +51,7 @@ SORTS = {"none": xbmcplugin.SORT_METHOD_NONE,
          "userrating": xbmcplugin.SORT_METHOD_VIDEO_USER_RATING}
 
 
-class ItemList(object):
+class ItemList:
 
     def __init__(self, items=None, content_type="", name="", sorts=None, totals=None, properties=None):
         self.name = name

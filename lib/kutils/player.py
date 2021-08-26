@@ -13,7 +13,7 @@ from kutils import utils
 class VideoPlayer(xbmc.Player):
 
     def __init__(self, *args, **kwargs):
-        super(VideoPlayer, self).__init__()
+        super().__init__()
         self.stopped = False
 
     def onPlayBackEnded(self):

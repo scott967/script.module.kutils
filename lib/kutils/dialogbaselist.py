@@ -9,7 +9,7 @@ import xbmcgui
 from kutils import addon
 from kutils import busy
 from kutils import ActionHandler
-from kutils.T9Search import T9Search
+from kutils.t9_search import T9Search
 from kutils import utils
 
 ch = ActionHandler()
@@ -21,7 +21,7 @@ ID_BUTTON_NEXT_PAGE = 600
 ID_BUTTON_TOGGLETYPE = 5007
 
 
-class DialogBaseList(object):
+class DialogBaseList:
     viewid = {
         'WALL 3D' : '67',
         'BANNER' : '52',
@@ -61,7 +61,7 @@ class DialogBaseList(object):
     """
 
     def __init__(self, *args, **kwargs):
-        super(DialogBaseList, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.search_str = kwargs.get('search_str', "")
         self.filter_label = kwargs.get("filter_label", "")
         self.mode = kwargs.get("mode", "filter")
@@ -91,7 +91,7 @@ class DialogBaseList(object):
             self.update_content(force_update=kwargs.get('force', False))
 
     def onInit(self):
-        super(DialogBaseList, self).onInit()
+        super().onInit()
         viewtype = addon.setting("viewtype_selection")
         self.cur_viewtype = DialogBaseList.viewid.get(xbmc.getInfoLabel('Container.Viewmode'))
         try:
@@ -134,7 +134,7 @@ class DialogBaseList(object):
         addon.set_setting("viewtype_selection", str(self.getCurrentContainerId()))
         self.last_position = self.getCurrentListPosition()
         xbmc.executebuiltin("Container.SetViewMode(%s)" % self.cur_viewtype)
-        super(DialogBaseList, self).close()
+        super().close()
 
     def set_sort(self, sort):
         """

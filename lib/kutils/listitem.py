@@ -8,7 +8,7 @@ import xbmc
 from kutils import utils
 
 
-class ListItem(object):
+class ListItem:
     ICON_OVERLAY_NONE = 0       # No overlay icon
     ICON_OVERLAY_RAR = 1        # Compressed *.rar files
     ICON_OVERLAY_ZIP = 2        # Compressed *.zip files
@@ -265,7 +265,7 @@ class AudioItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "music"
-        super(AudioItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def from_listitem(self, listitem):
         info = listitem.getAudioInfoTag()
@@ -314,10 +314,10 @@ class VideoItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "video"
-        super(VideoItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
-        baseinfo = super(VideoItem, self).__repr__()
+        baseinfo = super().__repr__()
         return "\n".join([baseinfo,
                           "Cast:", utils.dump_dict(self.cast),
                           "VideoStreams:", utils.dump_dict(self.videoinfo),
@@ -366,14 +366,14 @@ class VideoItem(ListItem):
     def update_from_listitem(self, listitem):
         if not listitem:
             return None
-        super(VideoItem, self).update_from_listitem(listitem)
+        super().update_from_listitem(listitem)
         self.set_videoinfos(listitem.videoinfo)
         self.set_audioinfos(listitem.audioinfo)
         self.set_subinfos(listitem.subinfo)
         self.set_cast(listitem.cast)
 
     def get_listitem(self):
-        listitem = super(VideoItem, self).get_listitem()
+        listitem = super().get_listitem()
         for item in self.videoinfo:
             listitem.addStreamInfo("video", item)
         for item in self.audioinfo:
@@ -445,5 +445,5 @@ class GameItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "game"
-        super(GameItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 

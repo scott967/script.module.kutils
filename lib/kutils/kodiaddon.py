@@ -13,7 +13,7 @@ import hashlib
 HOME = xbmcgui.Window(10000)
 
 
-class Addon(object):
+class Addon:
     """
     Wrapper for xbmcaddon.Addon()
     """

@@ -10,7 +10,7 @@ import traceback
 from functools import wraps
 
 
-class BusyHandler(object):
+class BusyHandler:
     """
     Class to deal with busydialog handling
     """

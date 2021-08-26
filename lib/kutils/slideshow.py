@@ -21,7 +21,7 @@ class SlideShow(xbmcgui.WindowXMLDialog):
         self.action = None
 
     def onInit(self):
-        super(SlideShow, self).onInit()
+        super().onInit()
         if not self.images:
             return None
         self.getControl(self.ID_LIST_PICTURES).addItems(utils.create_listitems(self.images))

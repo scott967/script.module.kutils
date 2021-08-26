@@ -97,7 +97,7 @@ def get_colors(img):
 class FilterImageThread(threading.Thread):
 
     def __init__(self, image="", radius=25):
-        threading.Thread.__init__(self)
+        super().__init__()
         self.image = image
         self.radius = radius
         self.info = {}
