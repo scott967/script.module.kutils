@@ -3,9 +3,6 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import os
 
 import xbmcgui
@@ -38,7 +35,7 @@ class SlideShow(xbmcgui.WindowXMLDialog):
 
 
 def open(listitems, index):
-    slideshow = SlideShow(u'script-script.module.kodi65-pictureviewer.xml',
+    slideshow = SlideShow('script-script.module.kodi65-pictureviewer.xml',
                           os.path.join(os.path.dirname(__file__), "..", ".."),
                           listitems=listitems,
                           index=index)

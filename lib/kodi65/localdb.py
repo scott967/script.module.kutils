@@ -3,17 +3,14 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-import itertools
 import json
+import itertools
 
-from kodi65 import ItemList
-from kodi65 import VideoItem
-from kodi65 import addon
 from kodi65 import kodijson
+from kodi65 import addon
 from kodi65 import utils
+from kodi65 import VideoItem
+from kodi65 import ItemList
 
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 MOVIE_PROPS = ["title", "genre", "year", "rating", "director", "trailer",
@@ -208,7 +205,7 @@ class LocalDB(object):
         db_movie.set_artwork(movie['art'])
         db_movie.set_videoinfos(movie['streamdetails']["video"])
         db_movie.set_audioinfos(movie['streamdetails']["audio"])
-        stream_info = media_streamdetails(movie['file'].encode('utf-8').lower(),
+        stream_info = media_streamdetails(movie['file'].lower(),
                                           movie['streamdetails'])
         db_movie.update_properties(stream_info)
         db_movie.set_cast(movie.get("cast"))
