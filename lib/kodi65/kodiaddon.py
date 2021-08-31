@@ -14,6 +14,7 @@ import os
 import uuid
 
 import xbmc
+import xbmcvfs
 import xbmcaddon
 import xbmcgui
 
@@ -41,7 +42,7 @@ class Addon(object):
         self.SUMMARY = str(self.addon.getAddonInfo('summary'))
         self.TYPE = str(self.addon.getAddonInfo('type'))
         self.MEDIA_PATH = os.path.join(self.PATH, "resources", "skins", "Default", "media")
-        self.DATA_PATH = str(xbmc.translatePath("special://profile/addon_data/%s" % self.ID))
+        self.DATA_PATH = str(xbmcvfs.translatePath("special://profile/addon_data/%s" % self.ID))
 
     def setting(self, setting_name):
         """

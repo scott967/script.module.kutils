@@ -284,7 +284,7 @@ def create_listitems(data=None, preload_images=0):
 
 
 def translate_path(*args):
-    return xbmc.translatePath(os.path.join(*args)).decode("utf-8")
+    return xbmcvfs.translatePath(os.path.join(*args)).decode("utf-8")
 
 
 def get_infolabel(name):
