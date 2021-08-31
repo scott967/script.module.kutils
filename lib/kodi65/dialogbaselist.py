@@ -3,16 +3,14 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import xbmc
 import xbmcgui
 
-from kodi65 import ActionHandler
 from kodi65 import addon
 from kodi65 import busy
-from kodi65.T9Search import T9Search
+from kodi65 import ActionHandler
+from .T9Search import T9Search
+from kodi65 import utils
 
 ch = ActionHandler()
 
@@ -24,6 +22,39 @@ ID_BUTTON_TOGGLETYPE = 5007
 
 
 class DialogBaseList(object):
+    viewid = {
+        'WALL 3D' : '67',
+        'BANNER' : '52',
+        'BANNER INFO' : '53',
+        'COVERFLOW' : '58',
+        'GAMES' : '50',
+        'GLASS LIST' : '57',
+        'LANDSCAPEX' : '64',
+        'LOW LIST' : '55',
+        'MID LIST' : '70',
+        'MULTI-LIST' : '71',
+        'MULTIPLEX' : '61',
+        'PANEL' : '62',
+        'PHOTOSHOW' : '79',
+        'POSTER' : '54',
+        'RIGHT LIST' : '59',
+        'SETS' : '65',
+        'SHELF' : '63',
+        'SHELFCASE' : '69',
+        'SHOWART' : '60',
+        'SHOWCASE' : '66',
+        'WALL' : '56',
+        'WIDE' : '51',
+        'List' : '50',
+        'IconWall' : '52',
+        'Shift' : '53',
+        'InfoWall' : '54',
+        'WideList' : '55',
+        'Banner' : '501',
+        'Fanart' : '502'
+    }
+
+
 
     """
     BaseList for MediaBrowsers (handles filtering, sorting)
@@ -62,6 +93,9 @@ class DialogBaseList(object):
     def onInit(self):
         super(DialogBaseList, self).onInit()
         viewtype = addon.setting("viewtype_selection")
+        self.cur_viewtype = DialogBaseList.viewid.get(xbmc.getInfoLabel('Container.Viewmode'))
+        utils.log('module.kodi65.current viewtype: ' + self.cur_viewtype)
+        utils.log('module.kodi65.viewtype: ' + viewtype)
         if viewtype:
             xbmc.executebuiltin("Container.SetViewMode(%s)" % viewtype)
         self.update_ui()
@@ -96,6 +130,7 @@ class DialogBaseList(object):
         """
         addon.set_setting("viewtype_selection", str(self.getCurrentContainerId()))
         self.last_position = self.getCurrentListPosition()
+        xbmc.executebuiltin("Container.SetViewMode(%s)" % self.cur_viewtype)
         super(DialogBaseList, self).close()
 
     def set_sort(self, sort):
@@ -110,7 +145,7 @@ class DialogBaseList(object):
         """
         check if sort is valid. If not, change to default.
         """
-        if self.sort not in [i for i in self.SORTS[self.sort_key].keys()]:
+        if self.sort not in [i for i in list(self.SORTS[self.sort_key].keys())]:
             self.set_sort(self.default_sort)
 
     @ch.click(ID_BUTTON_TOGGLETYPE)
@@ -152,7 +187,7 @@ class DialogBaseList(object):
             result = xbmcgui.Dialog().input(heading=addon.LANG(16017),
                                             type=xbmcgui.INPUT_ALPHANUM)
             if result and result > -1:
-                self.search(result.decode("utf-8"))
+                self.search(result)
         else:
             T9Search(call=self.search,
                      start_value="",
@@ -309,8 +344,8 @@ class DialogBaseList(object):
         open dialog and let user choose sortmethod
         returns True if sorthmethod changed
         """
-        listitems = self.SORTS[sort_key].values()
-        sort_strings = self.SORTS[sort_key].keys()
+        listitems = list(self.SORTS[sort_key].values())
+        sort_strings = list(self.SORTS[sort_key].keys())
         preselect = listitems.index(self.sort_label) if self.sort_label in listitems else -1
         index = xbmcgui.Dialog().select(heading=addon.LANG(32104),
                                         list=listitems,

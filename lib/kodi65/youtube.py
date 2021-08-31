@@ -3,19 +3,14 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
-from builtins import str
-
+import urllib.request, urllib.parse, urllib.error
 import itertools
-import urllib
 
-from kodi65 import ItemList
-from kodi65 import VideoItem
 from kodi65 import utils
+from kodi65 import VideoItem
+from kodi65 import ItemList
 
-YT_KEY = 'AIzaSyB-BOZ_o09NLVwq_lMskvvj1olDkFI4JK0'
+YT_KEY = ''
 BASE_URL = "https://www.googleapis.com/youtube/v3/"
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 
@@ -50,23 +45,23 @@ def handle_videos(results, extended=False):
               "id": ",".join([i.get_property("youtube_id") for i in videos])}
     ext_results = get_data(method="videos",
                            params=params)
-    if not ext_results:
+    if not ext_results or not 'items' in ext_results.keys():
         return videos
     for item in videos:
         for ext_item in ext_results["items"]:
             if not item.get_property("youtube_id") == ext_item['id']:
                 continue
             details = ext_item['contentDetails']
-            stats = ext_item.get('statistics')
-            likes = stats.get('likeCount') if stats else None
-            dislikes = stats.get('dislikeCount') if stats else None
+            stats = ext_item['statistics']
+            likes = stats.get('likeCount')
+            dislikes = stats.get('dislikeCount')
             item.update_infos({"duration": get_duration_in_seconds(details['duration'])})
             props = {"duration": details['duration'][2:].lower(),
                      "formatted_duration": get_formatted_duration(details['duration']),
                      "dimension": details['dimension'],
                      "definition": details['definition'],
                      "caption": details['caption'],
-                     "viewcount": utils.millify(stats['viewCount']),
+                     "viewcount": utils.millify(int(stats['viewCount'])),
                      "likes": likes,
                      "dislikes": dislikes}
             item.update_properties(props)
@@ -175,17 +170,17 @@ def get_data(method, params=None, cache_days=0.5):
     fetch data from youtube API
     """
     params = params if params else {}
-    params["key"] = YT_KEY
-    params = {k: str(v) for k, v in params.iteritems() if v}
+#    params["key"] = YT_KEY
+    params = {k: str(v) for k, v in params.items() if v}
     url = "{base_url}{method}?{params}".format(base_url=BASE_URL,
                                                method=method,
-                                               params=urllib.urlencode(params))
+                                               params=urllib.parse.urlencode(params))
     return utils.get_JSON_response(url=url,
                                    cache_days=cache_days,
                                    folder="YouTube")
 
 
-def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, page="", filters=None, media_type="video"):
+def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, page="", filters=None, media_type="video", api_key=""):
     """
     returns ItemList according to search term, filters etc.
     """
@@ -195,13 +190,11 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, p
               "order": orderby,
               "pageToken": page,
               "hd": str(hd and not hd == "false"),
-              "q": search_str.replace('"', '')}
+              "q": search_str.replace('"', ''),
+              "key" : api_key}
     results = get_data(method="search",
                        params=utils.merge_dicts(params, filters if filters else {}))
-    if not results:
-        return None
-    if "error" in results:
-        utils.pp(results)
+    if not results or not 'items' in results.keys():
         return None
     if media_type == "video":
         listitems = handle_videos(results["items"], extended=extended)

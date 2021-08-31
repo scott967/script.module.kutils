@@ -3,24 +3,17 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import division
-from __future__ import unicode_literals
-
+import urllib.request, urllib.parse, urllib.error
 import os
 import threading
-import urllib
+import PIL.Image
+import PIL.ImageFilter
 
 import xbmc
 import xbmcvfs
 
 from kodi65 import addon
 from kodi65 import utils
-
-import PIL.Image
-import PIL.ImageFilter
-
-xrange = range
 
 THUMBS_CACHE_PATH = utils.translate_path("special://profile/Thumbnails/Video")
 IMAGE_PATH = os.path.join(addon.DATA_PATH, "images")
@@ -31,7 +24,7 @@ def blur(input_img, radius=25):
         return {}
     if not xbmcvfs.exists(IMAGE_PATH):
         xbmcvfs.mkdir(IMAGE_PATH)
-    input_img = utils.translate_path(urllib.unquote(input_img.encode("utf-8")))
+    input_img = utils.translate_path(urllib.parse.unquote(input_img))
     input_img = input_img.replace("image://", "").rstrip("/")
     cachedthumb = xbmc.getCacheThumbName(input_img)
     filename = "%s-radius_%i.png" % (cachedthumb, radius)
@@ -82,22 +75,22 @@ def get_colors(img):
     except Exception:
         return "FFF0F0F0"
     data = []
-    for x in xrange(width // 2):
-        data += [pixels[x * 2, y * 2] for y in xrange(height // 2)]
+    for x in range(width // 2):
+        data += [pixels[x * 2, y * 2] for y in range(height // 2)]
     pix_values = [(x[0], x[1], x[2]) for x in data if 150 < (x[0] + x[1] + x[2]) < 720]
     if len(pix_values) == 0:
         return "FFF0F0F0"
-    r_avg = int(sum([i[0] for i in pix_values]) // len(pix_values))
-    g_avg = int(sum([i[1] for i in pix_values]) // len(pix_values))
-    b_avg = int(sum([i[2] for i in pix_values]) // len(pix_values))
-    avg = (r_avg + g_avg + b_avg) // 3
+    r_avg = int(sum([i[0] for i in pix_values]) / len(pix_values))
+    g_avg = int(sum([i[1] for i in pix_values]) / len(pix_values))
+    b_avg = int(sum([i[2] for i in pix_values]) / len(pix_values))
+    avg = (r_avg + g_avg + b_avg) / 3
     min_brightness = 170
     if avg < min_brightness:
         diff = min_brightness - avg
-        r_avg = min(r_avg + diff, 255)
-        g_avg = min(g_avg + diff, 255)
-        b_avg = min(b_avg + diff, 255)
-    return "FF%s%s%s" % (format(r_avg, '02x'), format(g_avg, '02x'), format(b_avg, '02x'))
+        r_avg = int(min(r_avg + diff, 255))
+        g_avg = int(min(g_avg + diff, 255))
+        b_avg = int(min(b_avg + diff, 255))
+    return f"FF{r_avg:02X}{g_avg:02X}{b_avg:02X}"
 
 
 class FilterImageThread(threading.Thread):

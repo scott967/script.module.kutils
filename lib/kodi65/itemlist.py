@@ -3,12 +3,9 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from __future__ import absolute_import
-from __future__ import unicode_literals
-
 import xbmcplugin
-from kodi65 import addon
 from kodi65 import utils
+from kodi65 import addon
 
 SORTS = {"none": xbmcplugin.SORT_METHOD_NONE,
          "unsorted": xbmcplugin.SORT_METHOD_UNSORTED,
@@ -81,21 +78,21 @@ class ItemList(object):
     def __cmp__(self, other):
         return len(self) - len(other)
 
-    def __nonzero__(self):
+    def __bool__(self):
         return len(self._items) > 0
 
     def __repr__(self):
         return "Itemlist with length %s. Content type: %s" % (len(self._items), self.content_type)
 
     def __add__(self, other):
-        return ItemList(items=self._items + other.items(),
+        return ItemList(items=self._items + list(other.items()),
                         content_type=self.content_type,
                         name=self.name,
                         sorts=self.sorts,
                         properties=self._properties)
 
     def __iadd__(self, other):
-        self._items += other.items()
+        self._items += list(other.items())
         return self
 
     def prettify(self):
@@ -133,7 +130,7 @@ class ItemList(object):
         self._properties = properties
 
     def update_properties(self, properties):
-        self._properties.update({k: v for k, v in properties.iteritems() if v})
+        self._properties.update({k: v for k, v in properties.items() if v})
 
     def set_property(self, key, value):
         self._properties[key] = value
@@ -202,6 +199,6 @@ class ItemList(object):
             else:
                 index = ids.index(id_)
                 if key in merged_items[index]:
-                    merged_items[index][key] = merged_items[index][key] + " / " + item[key]
+                    merged_items[index][key] = merged_items[index][key] + " / " + str(item[key])
         self._items = merged_items
         return self
