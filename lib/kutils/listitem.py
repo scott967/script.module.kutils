@@ -31,11 +31,13 @@ class ListItem:
         self.cast = []
         self._properties = properties if properties else {}
         self._artwork = artwork if artwork else {}
-        self._ratings = ratings if ratings else []
+        self._ratings: Dict[str, str] = ratings if ratings else []
         self._ids = ids if ids else {}
         self._infos = infos if infos else {}
         self.specials = {}
         self._is_folder = False
+        self.type: str = ""
+        self.label: str = ""
 
     def __setitem__(self, key, value):
         self._properties[key] = value
@@ -200,6 +202,7 @@ class ListItem:
         return {k: v for k, v in self._properties.items() if v}
 
     def get_listitem(self):
+        listitem: xbmcgui.ListItem
         listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
                                     label2=str(self.label2) if self.label2 else "",
                                     path=self.path)
@@ -327,7 +330,7 @@ class VideoItem(ListItem):
                           "Subs:", utils.dump_dict(self.subinfo),
                           "", ""])
 
-    def from_listitem(self, listitem):
+    def from_listitem(self, listitem: xbmcgui.ListItem):
         """
         xbmcgui listitem -> kodi65 listitem
         """
