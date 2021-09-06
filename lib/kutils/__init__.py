@@ -17,5 +17,13 @@ from kutils.localdb import LocalDB
 from kutils.player import VideoPlayer
 from kutils.abs_last_fm import AbstractLastFM
 
-local_db = LocalDB(last_fm=AbstractLastFM())
+import sys
+
+# PIL uses numpy if it is available.
+# numpy can NOT be loaded multiple times in a sub-interpreter.
+# Since numpy is optional, force it to NEVER be imported.
+
+sys.modules['numpy'] = None
+
+local_db: LocalDB = LocalDB(last_fm=AbstractLastFM())
 player = VideoPlayer()
