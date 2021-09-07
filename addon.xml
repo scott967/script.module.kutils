@@ -22,6 +22,11 @@
 
             Changed youtube.py to require YouTube api_key to be passed as
             argument. Hard-coded key no longer used.
+
+            Resolved Kodi crash issue caused by a known limitation of numpy,
+            which was indirectly loaded by another library, PIL.
+            Forced numpy to NEVER be loaded. The use of numpy provided a
+            small performance improvement.
         </news>
         <assets>
             <icon>resources/icon.png</icon>

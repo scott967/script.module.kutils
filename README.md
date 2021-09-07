@@ -16,3 +16,11 @@ Changes:
 1.2.1+matrix.7
 Hard-coded Youtube API key eliminated. Add-ons must supply their own api-key as
 an argument. Impacts youtube.py
+
+Fixed issues identified during addon review, particularly changes required by
+Kodi API changes.
+
+Resolved issue with Kodi crashing due to a numpy limitation: numpy can only 
+be initialized once in a sub-interpreter environment. Resolved by forcing
+numpy to NOT be loaded, even if present. Kutils had a soft dependency on
+numpy.
