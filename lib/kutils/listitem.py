@@ -21,23 +21,27 @@ class ListItem:
         """
         Kodi listitem, based on built-in datatypes
         """
-        self.set_label(label)
-        self.set_label2(label2)
-        self.path = path
+        #
+        # Define all instance variables
+        #
         self.size = ""
         self.videoinfo = []
         self.audioinfo = []
         self.subinfo = []
         self.cast = []
+        self.specials = {}
+        self._is_folder = False
+        self.type: str = ""
+        self.label: str = ""
+
+        self.set_label(label)
+        self.set_label2(label2)
+        self.path = path
         self._properties = properties if properties else {}
         self._artwork = artwork if artwork else {}
         self._ratings: Dict[str, str] = ratings if ratings else []
         self._ids = ids if ids else {}
         self._infos = infos if infos else {}
-        self.specials = {}
-        self._is_folder = False
-        self.type: str = ""
-        self.label: str = ""
 
     def __setitem__(self, key, value):
         self._properties[key] = value
@@ -201,7 +205,7 @@ class ListItem:
     def get_properties(self):
         return {k: v for k, v in self._properties.items() if v}
 
-    def get_listitem(self):
+    def get_listitem(self) -> xbmcgui.ListItem:
         listitem: xbmcgui.ListItem
         listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
                                     label2=str(self.label2) if self.label2 else "",
@@ -366,7 +370,7 @@ class VideoItem(ListItem):
                        "imdbnumber": info.getIMDBNumber(),
                        "year": info.getYear()}
 
-    def update_from_listitem(self, listitem):
+    def update_from_listitem(self, listitem: ListItem):
         if not listitem:
             return None
         super().update_from_listitem(listitem)
@@ -375,7 +379,7 @@ class VideoItem(ListItem):
         self.set_subinfos(listitem.subinfo)
         self.set_cast(listitem.cast)
 
-    def get_listitem(self):
+    def get_listitem(self) -> xbmcgui.ListItem:
         listitem = super().get_listitem()
         for item in self.videoinfo:
             listitem.addStreamInfo("video", item)
