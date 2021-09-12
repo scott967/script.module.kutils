@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.module.kutils" name="Utilities for Kodi" version="1.2.1+matrix.7"
+<addon id="script.module.kutils" name="Utilities for Kodi" version="1.3.0"
        provider-name="Philipp Temminghoff (phil65), Frank Feuerbacher (fbacher)">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
@@ -18,7 +18,8 @@
         <news>
             08/18/2021 Forked from phil65 master prior to python3/future
             changes. Renamed addon, updated dependencies, adjust to
-            latest kodi API changes.
+            latest kodi API changes. Updated version to 1.3.0 due to the
+            significant changes (particularly name changes).
 
             Changed youtube.py to require YouTube api_key to be passed as
             argument. Hard-coded key no longer used.

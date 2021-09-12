@@ -13,12 +13,14 @@ Maintenance assumed by Frank Feuerbacher (https://github.com/fbacher/script.modu
 Updated Dependencies and renamed add-on to conform with Kodi naming rules.
 
 Changes:
-1.2.1+matrix.7
+1.3.0
 Hard-coded Youtube API key eliminated. Add-ons must supply their own api-key as
 an argument. Impacts youtube.py
 
 Fixed issues identified during addon review, particularly changes required by
-Kodi API changes.
+Kodi API changes (including renaming addon). Also renamed imported lib to 
+match new addon name. Also changed several file names to be all lower case
+(kodi standard).
 
 Resolved issue with Kodi crashing due to a numpy limitation: numpy can only 
 be initialized once in a sub-interpreter environment. Resolved by forcing
