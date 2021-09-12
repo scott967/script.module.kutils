@@ -15,6 +15,7 @@
         <platform>all</platform>
         <license>LGPL-2.1-only</license>
         <source>https://github.com/fbacher/script.module.kutils</source>
+        <forum>https://forum.kodi.tv/showthread.php?tid=364435</forum>
         <news>
             08/18/2021 Forked from phil65 master prior to python3/future
             changes. Renamed addon, updated dependencies, adjust to
