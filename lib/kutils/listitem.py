@@ -33,6 +33,7 @@ class ListItem:
         self._is_folder = False
         self.type: str = ""
         self.label: str = ""
+        self.label2 = ""
 
         self.set_label(label)
         self.set_label2(label2)
