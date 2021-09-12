@@ -39,7 +39,7 @@ class VideoPlayer(xbmc.Player):
 
     def wait_for_video_end(self):
         monitor: xbmc.Monitor = xbmc.Monitor()
-        while not monitor.waitForAbort(0.1):
+        while not monitor.waitForAbort(1.0):
             if self.stopped:
                 break
 
