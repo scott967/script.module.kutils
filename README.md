@@ -1,4 +1,4 @@
-# script.module.utils
+# script.module.kutils
 Helper module for Kodi development.
 
 Imports a number of common dependencies and provides useful utilities for performing
