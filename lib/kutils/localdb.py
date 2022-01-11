@@ -421,6 +421,21 @@ class LocalDB:
                 return data['result']['tvshowdetails']['imdbnumber']
         return None
 
+    def get_tmdb_id(self, media_type, dbid):
+        if not dbid:
+            return None
+        if media_type == "movie":
+            data = kodijson.get_json(method="VideoLibrary.GetMovieDetails",
+                                     params={"properties": ["uniqueid", "title", "year"], "movieid": int(dbid)})
+            if "result" in data and "moviedetails" in data["result"]:
+                return data['result']['moviedetails']['uniqueid'].get('tmdb', None)
+        elif media_type == "tvshow":
+            data = kodijson.get_json(method="VideoLibrary.GetTVShowDetails",
+                                     params={"properties": ["uniqueid", "title", "year"], "tvshowid": int(dbid)})
+            if "result" in data and "tvshowdetails" in data["result"]:
+                return data['result']['tvshowdetails']['uniqueid'].get('tmdb', None)
+        return None
+		
     def get_tvshow_id_by_episode(self, dbid):
         if not dbid:
             return None
