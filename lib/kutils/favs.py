@@ -3,10 +3,10 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-from kodi65 import ListItem
-from kodi65 import ItemList
-from kodi65 import utils
-from kodi65 import kodijson
+from kutils import ListItem
+from kutils import ItemList
+from kutils import utils
+from kutils import kodijson
 
 
 def get_favs_by_type(fav_type):

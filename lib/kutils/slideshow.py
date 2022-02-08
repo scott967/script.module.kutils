@@ -7,7 +7,7 @@ import os
 
 import xbmcgui
 
-from kodi65 import utils
+from kutils import utils
 
 
 class SlideShow(xbmcgui.WindowXMLDialog):
@@ -21,7 +21,7 @@ class SlideShow(xbmcgui.WindowXMLDialog):
         self.action = None
 
     def onInit(self):
-        super(SlideShow, self).onInit()
+        super().onInit()
         if not self.images:
             return None
         self.getControl(self.ID_LIST_PICTURES).addItems(utils.create_listitems(self.images))
@@ -35,7 +35,7 @@ class SlideShow(xbmcgui.WindowXMLDialog):
 
 
 def open(listitems, index):
-    slideshow = SlideShow('script-script.module.kodi65-pictureviewer.xml',
+    slideshow = SlideShow('script-script.module.kutils-pictureviewer.xml',
                           os.path.join(os.path.dirname(__file__), "..", ".."),
                           listitems=listitems,
                           index=index)

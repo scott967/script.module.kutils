@@ -5,10 +5,10 @@
 
 import xbmcgui
 import xbmc
-from kodi65 import utils
+from kutils import utils
 
 
-class ListItem(object):
+class ListItem:
     ICON_OVERLAY_NONE = 0       # No overlay icon
     ICON_OVERLAY_RAR = 1        # Compressed *.rar files
     ICON_OVERLAY_ZIP = 2        # Compressed *.zip files
@@ -21,21 +21,28 @@ class ListItem(object):
         """
         Kodi listitem, based on built-in datatypes
         """
-        self.set_label(label)
-        self.set_label2(label2)
-        self.path = path
+        #
+        # Define all instance variables
+        #
         self.size = ""
         self.videoinfo = []
         self.audioinfo = []
         self.subinfo = []
         self.cast = []
-        self._properties = properties if properties else {}
-        self._artwork = artwork if artwork else {}
-        self._ratings = ratings if ratings else []
-        self._ids = ids if ids else {}
-        self._infos = infos if infos else {}
         self.specials = {}
         self._is_folder = False
+        self.type: str = ""
+        self.label: str = ""
+        self.label2 = ""
+
+        self.set_label(label)
+        self.set_label2(label2)
+        self.path = path
+        self._properties = properties if properties else {}
+        self._artwork = artwork if artwork else {}
+        self._ratings: Dict[str, str] = ratings if ratings else []
+        self._ids = ids if ids else {}
+        self._infos = infos if infos else {}
 
     def __setitem__(self, key, value):
         self._properties[key] = value
@@ -199,7 +206,8 @@ class ListItem(object):
     def get_properties(self):
         return {k: v for k, v in self._properties.items() if v}
 
-    def get_listitem(self):
+    def get_listitem(self) -> xbmcgui.ListItem:
+        listitem: xbmcgui.ListItem
         listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
                                     label2=str(self.label2) if self.label2 else "",
                                     path=self.path)
@@ -265,7 +273,7 @@ class AudioItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "music"
-        super(AudioItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def from_listitem(self, listitem):
         info = listitem.getAudioInfoTag()
@@ -314,10 +322,10 @@ class VideoItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "video"
-        super(VideoItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
     def __repr__(self):
-        baseinfo = super(VideoItem, self).__repr__()
+        baseinfo = super().__repr__()
         return "\n".join([baseinfo,
                           "Cast:", utils.dump_dict(self.cast),
                           "VideoStreams:", utils.dump_dict(self.videoinfo),
@@ -327,7 +335,10 @@ class VideoItem(ListItem):
                           "Subs:", utils.dump_dict(self.subinfo),
                           "", ""])
 
-    def from_listitem(self, listitem):
+    def from_listitem(self, listitem: xbmcgui.ListItem):
+        """
+        xbmcgui listitem -> kodi65 listitem
+        """
         info = listitem.getVideoInfoTag()
         self.label = listitem.getLabel()
         self.path = info.getPath()
@@ -360,17 +371,17 @@ class VideoItem(ListItem):
                        "imdbnumber": info.getIMDBNumber(),
                        "year": info.getYear()}
 
-    def update_from_listitem(self, listitem):
+    def update_from_listitem(self, listitem: ListItem):
         if not listitem:
             return None
-        super(VideoItem, self).update_from_listitem(listitem)
+        super().update_from_listitem(listitem)
         self.set_videoinfos(listitem.videoinfo)
         self.set_audioinfos(listitem.audioinfo)
         self.set_subinfos(listitem.subinfo)
         self.set_cast(listitem.cast)
 
-    def get_listitem(self):
-        listitem = super(VideoItem, self).get_listitem()
+    def get_listitem(self) -> xbmcgui.ListItem:
+        listitem = super().get_listitem()
         for item in self.videoinfo:
             listitem.addStreamInfo("video", item)
         for item in self.audioinfo:
@@ -429,10 +440,10 @@ class VideoItem(ListItem):
         return self._ids
 
     def movie_from_dbid(self, dbid):
-        from .LocalDB import local_db
+        from kutils.localdb import LocalDB
         if not dbid:
             return None
-        self.update_from_listitem(local_db.get_movie(dbid))
+        self.update_from_listitem(LocalDB.get_movie(dbid))
 
 
 class GameItem(ListItem):
@@ -442,5 +453,5 @@ class GameItem(ListItem):
 
     def __init__(self, *args, **kwargs):
         self.type = "game"
-        super(GameItem, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 

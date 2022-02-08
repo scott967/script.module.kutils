@@ -23,16 +23,25 @@ def play_media(media_type, dbid, resume=True):
 
 
 def get_directory(path, media_type="files"):
+    """
+    get list with items from directory *path.
+    """
     return get_json(method="Files.GetDirectory",
                     params={"directory": path, "media": media_type})
 
 
 def send_text(text, close_keyboard=True):
+    """
+    SendText JSON message
+    """
     return get_json(method="Input.SendText",
                     params={"text": text, "done": "true" if close_keyboard else "false"})
 
 
 def get_artists(properties=None):
+    """
+    return list of artists from database
+    """
     properties = properties if properties else []
     data = get_json(method="AudioLibrary.GetArtists",
                     params={"properties": properties})
@@ -103,11 +112,17 @@ def set_userrating(media_type, dbid, rating):
 
 
 def get_favourites():
+    """
+    get list with favourites
+    """
     return get_json(method="Favourites.GetFavourites",
                     params={"type": None, "properties": ["path", "thumbnail", "window", "windowparameter"]})
 
 
 def set_art(media_type, art, dbid):
+    """
+    set artwork via json
+    """
     return get_json(method="VideoLibrary.Set%sDetails" % media_type,
                     params={"art": art,
                             "%sid" % media_type.lower(): int(dbid)})

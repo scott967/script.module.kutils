@@ -13,7 +13,10 @@ import hashlib
 HOME = xbmcgui.Window(10000)
 
 
-class Addon(object):
+class Addon:
+    """
+    Wrapper for xbmcaddon.Addon()
+    """
 
     def __init__(self, *args, **kwargs):
         self.addon = xbmcaddon.Addon(*args)
@@ -34,9 +37,15 @@ class Addon(object):
         self.DATA_PATH = xbmcvfs.translatePath("special://profile/addon_data/%s" % self.ID)
 
     def setting(self, setting_name):
+        """
+        get setting with name *setting_name
+        """
         return self.addon.getSetting(setting_name)
 
     def set_setting(self, setting_name, string):
+        """
+        set setting with name *setting_name to value *string
+        """
         self.addon.setSetting(str(setting_name), str(string))
 
     def set_password_prompt(self, setting_name):
@@ -61,6 +70,9 @@ class Addon(object):
             return decode_string(setting)
 
     def bool_setting(self, setting_name):
+        """
+        get bool setting (either True or False)
+        """
         return self.addon.getSetting(setting_name) == "true"
 
     def reload_addon(self):
@@ -93,6 +105,9 @@ def encode_string(clear):
 
 
 def decode_string(enc):
+    """
+    return decoded string (encoded with uuid)
+    """
     dec = []
     key = str(uuid.getnode())
     enc = base64.urlsafe_b64decode(enc)

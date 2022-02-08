@@ -6,11 +6,12 @@
 import json
 import itertools
 
-from kodi65 import kodijson
-from kodi65 import addon
-from kodi65 import utils
-from kodi65 import VideoItem
-from kodi65 import ItemList
+from kutils import kodijson
+from kutils import addon
+from kutils import utils
+from kutils import VideoItem
+from kutils import ItemList
+from kutils.abs_last_fm import AbstractLastFM
 
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 MOVIE_PROPS = ["title", "genre", "year", "rating", "director", "trailer",
@@ -27,12 +28,21 @@ TV_PROPS = ["title", "genre", "year", "rating", "plot",
             "dateadded", "tag", "art", "userrating", "ratings", "uniqueid", "runtime"]
 
 
-class LocalDB(object):
+class LocalDB:
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, last_fm: AbstractLastFM, *args, **kwargs):
+        """
+
+        :param last_fm: reference to implementation of AbstractLastFM
+        :param args:
+        :param kwargs:
+        """
         self.info = {}
         self.artists = []
         self.albums = []
+        self.last_fm = last_fm
+        if last_fm is None:
+            self.last_fm = AbstractLastFM()
 
     def get_artists(self):
         """
@@ -46,8 +56,7 @@ class LocalDB(object):
         get list of artists from db which are similar to artist with *artist_id
         based on LastFM online data
         """
-        import LastFM
-        simi_artists = LastFM.get_similar_artists(artist_id)
+        simi_artists = self.last_fm.get_similar_artists(artist_id)
         if simi_artists is None:
             utils.log('Last.fm didn\'t return proper response')
             return None

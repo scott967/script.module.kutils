@@ -6,10 +6,10 @@
 import xbmcgui
 
 
-class WindowMixin(object):
+class WindowMixin:
 
     def __init__(self, *args, **kwargs):
-        super(WindowMixin, self).__init__()
+        super().__init__()
         self.cancelled = False
 
     def FocusedItem(self, control_id):
@@ -44,7 +44,7 @@ class WindowMixin(object):
 class WindowXML(xbmcgui.WindowXML, WindowMixin):
 
     def __init__(self, *args, **kwargs):
-        super(WindowXML, self).__init__()
+        super().__init__()
         self.window_type = "window"
 
     def onInit(self):
@@ -54,7 +54,7 @@ class WindowXML(xbmcgui.WindowXML, WindowMixin):
 class DialogXML(xbmcgui.WindowXMLDialog, WindowMixin):
 
     def __init__(self, *args, **kwargs):
-        super(DialogXML, self).__init__()
+        super().__init__()
         self.window_type = "dialog"
 
     def onInit(self):

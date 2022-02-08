@@ -6,14 +6,14 @@
 import xbmc
 import xbmcgui
 
-from kodi65 import busy
-from kodi65 import utils
+from kutils import busy
+from kutils import utils
 
 
 class VideoPlayer(xbmc.Player):
 
     def __init__(self, *args, **kwargs):
-        super(VideoPlayer, self).__init__()
+        super().__init__()
         self.stopped = False
 
     def onPlayBackEnded(self):
@@ -30,15 +30,17 @@ class VideoPlayer(xbmc.Player):
         vid = utils.get_youtube_info(youtube_id)
         if not vid:
             return None, None
-        listitem = xbmcgui.ListItem(label=vid.title,
-                                    thumbnailImage=vid.thumbnail)
+        listitem = xbmcgui.ListItem(label=vid.title)
+        listitem.setArt({'thumb': vid.thumbnail})
         listitem.setInfo(type='video',
                          infoLabels={"genre": vid.sourceName,
                                      "plot": vid.description})
         return vid.streamURL(), listitem
 
     def wait_for_video_end(self):
-        xbmc.sleep(500)
-        while not self.stopped:
-            xbmc.sleep(100)
+        monitor: xbmc.Monitor = xbmc.Monitor()
+        while not monitor.waitForAbort(1.0):
+            if self.stopped:
+                break
+
         self.stopped = False

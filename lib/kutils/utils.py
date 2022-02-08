@@ -2,7 +2,8 @@
 
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
-
+import sys
+import traceback
 from functools import wraps
 import threading
 import json
@@ -13,13 +14,15 @@ import re
 import hashlib
 import urllib.request, urllib.parse, urllib.error
 import urllib.request, urllib.error, urllib.parse
+from io import StringIO
+
 import xbmc
 import xbmcgui
 import xbmcvfs
 import requests
 
 import YDStreamExtractor
-from kodi65 import addon
+from kutils import addon
 
 
 def youtube_info_by_id(youtube_id):
@@ -27,9 +30,8 @@ def youtube_info_by_id(youtube_id):
     if not vid:
         return None, None
     url = vid.streamURL()
-    listitem = xbmcgui.ListItem(label=vid.title,
-                                thumbnailImage=vid.thumbnail,
-                                path=url)
+    listitem = xbmcgui.ListItem(label=vid.title, path=url)
+    listitem.setArt({'thumb': vid.thumbnail})
     listitem.setInfo(type='video',
                      infoLabels={"genre": vid.sourceName,
                                  "path": url,
@@ -48,6 +50,59 @@ def log(*args):
         message = '%s: %s' % (addon.ID, arg)
         xbmc.log(msg=message,
                  level=xbmc.LOGDEBUG)
+
+
+def dump_all_threads(delay: float = None) -> None:
+    """
+        Dumps all Python stacks, including those in other plugins
+
+    :param delay:
+    :return:
+    """
+    if delay is None or delay == 0:
+        _dump_all_threads()
+    else:
+        dump_threads = threading.Timer(delay, _dump_all_threads)
+        dump_threads.setName('dump_threads')
+        dump_threads.start()
+
+
+def _dump_all_threads() -> None:
+    """
+        Worker method that dumps all threads.
+
+    :return:
+    """
+    addon_prefix = f'{addon.ID}/'
+    xbmc.log('dump_all_threads', xbmc.LOGDEBUG)
+    sio = StringIO()
+    sio.write('\n*** STACKTRACE - START ***\n\n')
+    code = []
+    #  Monitor.dump_wait_counts()
+    #  for threadId, stack in sys._current_frames().items():
+    for th in threading.enumerate():
+        sio.write(f'\n# ThreadID: {th.name} Daemon: {th.isDaemon()}\n\n')
+        stack = sys._current_frames().get(th.ident, None)
+        if stack is not None:
+            traceback.print_stack(stack, file=sio)
+
+    string_buffer: str = sio.getvalue() + '\n*** STACKTRACE - END ***\n'
+    sio.close()
+    msg = addon.ID + ' : dump_all_threads'
+    xbmc.log(msg, xbmc.LOGDEBUG)
+    xbmc.log(string_buffer, xbmc.LOGDEBUG)
+
+    '''
+    try:
+        dump_path = Constants.FRONTEND_DATA_PATH + '/stack_dump'
+
+        dump_file = io.open(dump_path, mode='at', buffering=1, newline=None,
+                            encoding='ascii')
+
+        faulthandler.dump_traceback(file=dump_file, all_threads=True)
+    except Exception as e:
+         pass
+    '''
 
 
 def format_seconds(seconds):
@@ -73,6 +128,9 @@ def pp(string):
 
 
 def dictfind(lst, key, value):
+    """
+    searches through a list of dicts, returns dict where dict[key] = value
+    """
     for i, dic in enumerate(lst):
         if dic[key] == value:
             return dic
@@ -102,10 +160,16 @@ def check_version():
 
 
 def get_skin_string(name):
+    """
+    get String with name *name
+    """
     return xbmc.getInfoLabel("Skin.String(%s)")
 
 
 def set_skin_string(name, value):
+    """
+    Set String *name to value *value
+    """
     xbmc.executebuiltin("Skin.SetString(%s, %s)" % (name, value))
 
 
@@ -125,6 +189,9 @@ def run_async(func):
 
 
 def contextmenu(options):
+    """
+    pass list of tuples (index, label), get index
+    """
     index = xbmcgui.Dialog().contextmenu(list=[i[1] for i in options])
     if index > -1:
         return [i[0] for i in options][index]
@@ -146,12 +213,18 @@ def extract_youtube_id(raw_string):
 
 
 def download_video(youtube_id):
+    """
+    download youtube video with id *youtube_id
+    """
     vid = YDStreamExtractor.getVideoInfo(youtube_id,
                                          quality=1)
     YDStreamExtractor.handleDownload(vid)
 
 
 def notify(header="", message="", icon=addon.ICON, time=5000, sound=True):
+    """
+    show kodi notification dialog
+    """
     xbmcgui.Dialog().notification(heading=header,
                                   message=message,
                                   icon=icon,
@@ -204,6 +277,9 @@ def format_time(time, time_format=None):
 
 
 def input_userrating(preselect=-1):
+    """
+    opens selectdialog and returns chosen userrating.
+    """
     index = xbmcgui.Dialog().select(heading=addon.LANG(38023),
                                     list=[addon.LANG(10035)] + [str(i) for i in range(1, 11)],
                                     preselect=preselect)
@@ -245,6 +321,9 @@ def read_from_file(path, raw=False):
 
 
 def create_listitems(data=None, preload_images=0):
+    """
+    returns list with xbmcgui listitems
+    """
     return [item.get_listitem() for item in data] if data else []
 
 
@@ -253,6 +332,9 @@ def translate_path(*args):
 
 
 def get_infolabel(name):
+    """
+    returns infolabel with *name
+    """
     return xbmc.getInfoLabel(name)
 
 
@@ -287,7 +369,7 @@ def get_http(url, headers=False):
     """
     succeed = 0
     if not headers:
-        headers = {'User-agent': 'Kodi/17.0 ( phil65@kodi.tv )'}
+        headers = {'User-agent': 'Kodi/17.0 ( fbacher@kodi.tv )'}
     while (succeed < 2) and (not xbmc.Monitor().abortRequested()):
         try:
             request = requests.get(url, headers=headers)
@@ -300,6 +382,9 @@ def get_http(url, headers=False):
 
 
 def post(url, values, headers):
+    """
+    retuns answer to post request
+    """
     request = requests.post(url=url,
                             data=json.dumps(values),
                             headers=headers)
@@ -307,6 +392,9 @@ def post(url, values, headers):
 
 
 def delete(url, values, headers):
+    """
+    returns answer to delete request
+    """
     request = requests.delete(url=url,
                               data=json.dumps(values),
                               headers=headers)
@@ -318,7 +406,7 @@ def get_JSON_response(url="", cache_days=7.0, folder=False, headers=False):
     get JSON response for *url, makes use of prop and file cache.
     """
     now = time.time()
-    hashed_url = hashlib.md5(url.encode("utf-8","ignore")).hexdigest()
+    hashed_url = hashlib.md5(url.encode("utf-8", "ignore")).hexdigest()
     cache_path = translate_path(addon.DATA_PATH, folder) if folder else translate_path(addon.DATA_PATH)
     cache_seconds = int(cache_days * 86400.0)
     if not cache_days:
@@ -421,7 +509,7 @@ def fetch_musicbrainz_id(artist, artist_id=-1):
 class FunctionThread(threading.Thread):
 
     def __init__(self, function=None, param=None):
-        threading.Thread.__init__(self)
+        super().__init__()
         self.function = function
         self.param = param
         self.setName(self.function.__name__)

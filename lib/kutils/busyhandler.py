@@ -5,24 +5,18 @@
 
 import xbmcgui
 import xbmc
-from kodi65 import utils
+from kutils import utils
 import traceback
 from functools import wraps
 
 
-class BusyHandler(object):
+class BusyHandler:
     """
     Class to deal with busydialog handling
     """
     def __init__(self, *args, **kwargs):
         self.busy = 0
         self.enabled = True
-        self.Kodi18Ver = True
-        utils.log("Kodi Ver: " + xbmc.getInfoLabel('System.BuildVersion')[0:2])
-        if int(xbmc.getInfoLabel('System.BuildVersion')[0:2]) < 18:
-             self.Kodi18Ver = False
-             self.dialog = xbmcgui.DialogBusy()
-        utils.log("Kodi18Ver: " + str(self.Kodi18Ver))
 
     def enable(self):
         """
@@ -42,14 +36,12 @@ class BusyHandler(object):
         """
         if not self.enabled:
             return None
-        if self.busy == 0 and self.Kodi18Ver:
+        if self.busy == 0:
             xbmc.executebuiltin('ActivateWindow(busydialognocancel)')
-        elif self.busy == 0 and not self.Kodi18Ver:
-            self.dialog.create()
         self.busy += 1
 
     def set_progress(self, percent):
-        if not self.Kodi18Ver: self.dialog.update(percent)
+        pass
 
     def hide_busy(self):
         """
@@ -58,11 +50,9 @@ class BusyHandler(object):
         if not self.enabled:
             return None
         self.busy = max(0, self.busy - 1)
-        if self.busy == 0 and self.Kodi18Ver:
-            utils.log('Closing busydialognoancel')
+        if self.busy == 0:
+            #  utils.log('Closing busydialognoancel')
             xbmc.executebuiltin('Dialog.Close(busydialognocancel)')
-        elif self.busy == 0 and not self.Kodi18Ver:
-            self.dialog.close()
 
     def set_busy(self, func):
         """

@@ -4,8 +4,8 @@
 # This program is Free Software see LICENSE file for details
 
 import xbmcplugin
-from kodi65 import utils
-from kodi65 import addon
+from kutils import utils
+from kutils import addon
 
 SORTS = {"none": xbmcplugin.SORT_METHOD_NONE,
          "unsorted": xbmcplugin.SORT_METHOD_UNSORTED,
@@ -51,7 +51,7 @@ SORTS = {"none": xbmcplugin.SORT_METHOD_NONE,
          "userrating": xbmcplugin.SORT_METHOD_VIDEO_USER_RATING}
 
 
-class ItemList(object):
+class ItemList:
 
     def __init__(self, items=None, content_type="", name="", sorts=None, totals=None, properties=None):
         self.name = name

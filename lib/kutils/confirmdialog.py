@@ -6,7 +6,7 @@
 import xbmcgui
 import xbmc
 
-from kodi65 import addon
+from kutils import addon
 
 ID_BUTTON_YES = 11
 ID_BUTTON_NO = 10
@@ -51,7 +51,7 @@ def open(header="", text="", yeslabel=addon.LANG(107), nolabel=addon.LANG(106), 
     """
     open yesnodialog, return -1 for cancelled, otherwise index (0-2)
     """
-    xbmc.executebuiltin("Dialog.Close(busydialog)")
+    xbmc.executebuiltin("Dialog.Close(busydialognocancel)")
     w = ConfirmDialog('DialogConfirm.xml', addon.PATH,
                       yeslabel=yeslabel,
                       nolabel=nolabel,

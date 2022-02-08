@@ -3,17 +3,18 @@
 # Copyright (C) 2015 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
-import urllib.request, urllib.parse, urllib.error
 import os
 import threading
+import urllib.parse
+
 import PIL.Image
 import PIL.ImageFilter
 
 import xbmc
 import xbmcvfs
 
-from kodi65 import addon
-from kodi65 import utils
+from kutils import addon
+from kutils import utils
 
 THUMBS_CACHE_PATH = utils.translate_path("special://profile/Thumbnails/Video")
 IMAGE_PATH = os.path.join(addon.DATA_PATH, "images")
@@ -96,7 +97,7 @@ def get_colors(img):
 class FilterImageThread(threading.Thread):
 
     def __init__(self, image="", radius=25):
-        threading.Thread.__init__(self)
+        super().__init__()
         self.image = image
         self.radius = radius
         self.info = {}

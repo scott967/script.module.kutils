@@ -7,18 +7,19 @@ import urllib.request, urllib.parse, urllib.error
 import itertools
 import html
 
-from kodi65 import utils
-from kodi65 import VideoItem
-from kodi65 import ItemList
+from kutils import utils
+from kutils import VideoItem
+from kutils import ItemList
 
-YT_KEY = ''
 BASE_URL = "https://www.googleapis.com/youtube/v3/"
 PLUGIN_BASE = "plugin://script.extendedinfo/?info="
 
 
 def handle_videos(results, extended=False, api_key=''):
     """
-    process video api result to ItemList
+    Process video api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
     """
     videos = ItemList(content_type="videos")
     for item in results:
@@ -63,7 +64,7 @@ def handle_videos(results, extended=False, api_key=''):
                      "dimension": details['dimension'],
                      "definition": details['definition'],
                      "caption": details['caption'],
-                     "viewcount": utils.millify(int(stats['viewCount'])),
+                     "viewcount": utils.millify(int(stats.get('viewCount', 0))),
                      "likes": likes,
                      "dislikes": dislikes}
             item.update_properties(props)
@@ -104,6 +105,9 @@ def get_formatted_duration(duration):
 def handle_playlists(results, api_key=''):
     """
     process playlist api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
+
     """
     playlists = ItemList(content_type="videos")
     for item in results:
@@ -138,6 +142,9 @@ def handle_playlists(results, api_key=''):
 def handle_channels(results, api_key=''):
     """
     process channel api result to ItemList
+
+    :param api_key: api_key to pass to YouTube
+
     """
     channels = ItemList(content_type="videos")
     for item in results:
@@ -184,9 +191,12 @@ def get_data(method, params=None, cache_days=0.5):
                                    folder="YouTube")
 
 
-def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, page="", filters=None, media_type="video", api_key=""):
+def search(search_str="", hd="", orderby="relevance", limit=40, extended=True,
+           page="", filters=None, media_type="video", api_key=""):
     """
     returns ItemList according to search term, filters etc.
+
+    :param api_key: api_key to pass to YouTube
     """
     params = {"part": "id,snippet",
               "maxResults": limit,
@@ -198,8 +208,13 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True, p
               "key" : api_key}
     results = get_data(method="search",
                        params=utils.merge_dicts(params, filters if filters else {}))
-    if not results or not 'items' in results.keys():
+    if not results or 'items' not in results.keys():
         return None
+	
+	# Give initial value to keep IDE happy as well as in case we drop through all
+	# choices
+	
+    listitems: ItemList = ItemList()
     if media_type == "video":
         listitems = handle_videos(results["items"], extended=extended, api_key=api_key)
     elif media_type == "playlist":

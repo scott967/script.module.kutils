@@ -6,7 +6,7 @@
 import xbmcgui
 import xbmc
 
-from kodi65 import addon
+from kutils import addon
 
 C_LABEL_HEADER = 1
 C_LIST_SIMPLE = 3
@@ -25,12 +25,13 @@ class SelectDialog(xbmcgui.WindowXMLDialog):
         self.extrabutton = kwargs.get('extrabutton')
         self.listitems = [i.get_listitem() for i in self.items] if self.items else []
         self.index = -1
+        self.list: xbmcgui.ControlList = None
 
     def onInit(self):
         if not self.listitems:
             self.index == -1
             self.close()
-        self.list = self.getControl(C_LIST_DETAIL)
+        self.list: xbmcgui.ControlList = self.getControl(C_LIST_DETAIL)
         self.getControl(C_LIST_DETAIL).setVisible(self.detailed)
         self.getControl(C_LIST_SIMPLE).setVisible(not self.detailed)
         self.getControl(C_BUTTON_GET_MORE).setVisible(bool(self.extrabutton))
@@ -56,7 +57,7 @@ def open(listitems, header, detailed=True, extrabutton=False):
     open selectdialog, return index (-1 for closing, -2 for extra button)
     *listitems needs to be an iterable with ListItems (array, ItemList)
     """
-    xbmc.executebuiltin("Dialog.Close(busydialog)")
+    xbmc.executebuiltin("Dialog.Close(busydialognocancel)")
     w = SelectDialog('DialogSelect.xml', addon.PATH,
                      listing=listitems,
                      header=header,
