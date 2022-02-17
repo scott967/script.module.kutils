@@ -3,10 +3,63 @@
 # Copyright (C) 2016 - Philipp Temminghoff <phil65@kodi.tv>
 # This program is Free Software see LICENSE file for details
 
+from typing import Dict  #pylint
 import xbmcgui
 import xbmc
 from kutils import utils
 
+INFOTAG_DISPATCHER = {
+                        'genre':'setGenres',
+                        'country':'setCountries',
+                        'year':'setYear',
+                        'episode':'setEpisode',
+                        'season':'setSeason',
+                        'sortepisode':'setSortEpisode',
+                        'sortseason':'setSortSeason',
+                        'episodeguide':'setEpisodeGuide',
+                        'showlink':'',
+                        'top250':'setTop250',
+                        'setid':'setSetId',
+                        'tracknumber':'setTrackNumber',
+                        'rating':'setRating',
+                        'userrating':'setUserRating',
+                        'watched':'',
+                        'playcount':'setPlaycount',
+                        'overlay':'',
+                        'cast':'setCast',
+                        'castandrole':'',
+                        'director':'setDirectors',
+                        'mpaa':'setMpaa',
+                        'plot': 'setPlot',
+                        'plotoutline':'setPlotOutline',
+                        'title':'setTitle',
+                        'originaltitle':'setOriginalTitle',
+                        'sorttitle':'setSortTitle',
+                        'duration':'setDuration',
+                        'studio':'setStudios',
+                        'tagline':'setTagLine',
+                        'writer':'setWriters',
+                        'tvshowtitle':'setTvShowTitle',
+                        'premiered':'setPremiered',
+                        'status':'setTvShowStatus',
+                        'set':'setSet',                  
+                        'setoverview':'setSetOverview',
+                        'tag':'setTags',
+                        'imdbnumber':'setUniqueID',
+                        'code':'setProductionCode',
+                        'aired':'setFirstAired',
+                        'credits':'',
+                        'lastplayed':'setLastPlayed',
+                        'album':'setAlbum',
+                        'artist':'setArtists',
+                        'votes':'setVotes',
+                        'path':'setPath',
+                        'trailer':'setTrailer',
+                        'dateadded':'setDateAdded',
+                        'mediatype':'setMediaType',
+                        'dbid':'setDbId'
+                         }
+KODI_MATRIX: bool = float(xbmc.getInfoLabel('System.BuildVersionCode')[:4]) < 19.9
 
 class ListItem:
     ICON_OVERLAY_NONE = 0       # No overlay icon
@@ -31,7 +84,7 @@ class ListItem:
         self.cast = []
         self.specials = {}
         self._is_folder = False
-        self.type: str = ""
+        self.type: str = "video"
         self.label: str = ""
         self.label2 = ""
 
@@ -225,7 +278,16 @@ class ListItem:
         if artwork:
             listitem.setArt(artwork)
         if infos:
-            listitem.setInfo(self.type, infos)
+            #Use setInfo for Matrix, Nexus complains so use videoinfo tag setters
+            if KODI_MATRIX:
+                listitem.setInfo(self.type, infos)
+            else:
+                vinfotag = listitem.getVideoInfoTag()
+                for k, v in infos.items():
+                    if k in ['genre','country','director','studio','writer']: v = v.split(' / ')
+                    if k in ['year']: v = int(v)
+                    if k in ['file', 'media_type']: continue
+                    getattr(vinfotag, INFOTAG_DISPATCHER[k])(v)
         return listitem
 
     def to_windowprops(self, prefix="", window_id=10000):
@@ -382,16 +444,66 @@ class VideoItem(ListItem):
 
     def get_listitem(self) -> xbmcgui.ListItem:
         listitem = super().get_listitem()
-        for item in self.videoinfo:
-            listitem.addStreamInfo("video", item)
-        for item in self.audioinfo:
-            listitem.addStreamInfo("audio", item)
-        for item in self.subinfo:
-            listitem.addStreamInfo("subtitle", item)
-        for item in self._ratings:
-            listitem.setRating(item["type"], item["rating"], item["votes"], item["default"])
-        listitem.setUniqueIDs(self._ids)
-        listitem.setCast(self.cast)
+        #Use listiem for Matrix, Nexus complains so use videoinfo tag setters
+        if KODI_MATRIX:
+            for item in self.videoinfo:
+                listitem.addStreamInfo("video", item)
+            for item in self.audioinfo:
+                listitem.addStreamInfo("audio", item)
+            for item in self.subinfo:
+                listitem.addStreamInfo("subtitle", item)
+            for item in self._ratings:
+                listitem.setRating(item["type"], item["rating"], item["votes"], item["default"])
+            listitem.setUniqueIDs(self._ids)
+            listitem.setCast(self.cast)
+        else:
+            vinfotag = listitem.getVideoInfoTag()
+            for item in self.videoinfo:
+                vstream = xbmc.VideoStreamDetail()
+                for k, v in item.items():
+                    if k == 'aspect':
+                        vstream.setAspect(v)
+                    elif k == 'codec':
+                        vstream.setCodec(v)
+                    elif k == 'duration':
+                        vstream.setDuration(v)
+                    elif k == 'height':
+                        vstream.setHeight(v)
+                    elif k == 'stereomode':
+                        vstream.setStereoMode(v)
+                    elif k == 'language':
+                        vstream.setLanguage(v)
+                    elif k == 'width':
+                        vstream.setWidth(v)
+            for item in self.audioinfo:
+                astream = xbmc.AudioStreamDetail()
+                for k, v in item.items():
+                    if k == 'channels':
+                        astream.setChannels(v)
+                    elif k == 'codec':
+                        astream.setCodec(v)
+                    elif k == 'language':
+                        astream.setLanguage(v)
+            for item in self.subinfo:
+                substream = xbmc.SubtitleStreamDetail()
+                for k, v in item.items():
+                    if k == 'language':
+                        substream.setLanguage(v)
+            vinfotag.setUniqueIDs(self._ids)
+            if self.cast:
+                castlist: list = []
+                for actorinfo in self.cast:
+                    actor = xbmc.Actor(actorinfo['name'])
+                    for k, v in actorinfo.items():
+                        if k == 'role':
+                            actor.setRole(v)
+                        elif k == 'order':
+                            actor.setOrder(v)
+                        elif k == 'thumbnail':
+                            actor.setThumbnail(v)
+                    castlist.append(actor)
+                # listitem.setCast(self.cast)
+                vinfotag.setCast(castlist)
         return listitem
 
     def add_videoinfo(self, info):

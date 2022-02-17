@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<addon id="script.module.kutils" name="Utilities for Kodi" version="1.3.0"
+<addon id="script.module.kutils" name="Utilities for Kodi" version="1.3.1"
        provider-name="Philipp Temminghoff (phil65), Frank Feuerbacher (fbacher)">
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
