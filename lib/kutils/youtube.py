@@ -208,6 +208,8 @@ def search(search_str="", hd="", orderby="relevance", limit=40, extended=True,
               "key" : api_key}
     results = get_data(method="search",
                        params=utils.merge_dicts(params, filters if filters else {}))
+    if 'error' in results.keys():
+        utils.log('youtube get_data ERROR: {error}'.format(error=results.get('error').get('message')))
     if not results or 'items' not in results.keys():
         return None
 	
