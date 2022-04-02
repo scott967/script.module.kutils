@@ -267,6 +267,12 @@ class ListItem:
         props = {k: str(v) for k, v in self._properties.items() if v}
         infos = {k.lower(): v for k, v in self._infos.items() if v}
         infos["path"] = self.path
+        if "media_type" in infos:
+            infos["mediatype"] = infos["media_type"]
+            infos.pop("media_type")
+        if "file" in infos:
+            infos["filenameandpath"] = infos["file"]
+            infos.pop("file")
         if "duration" in infos:
             props['duration(h)'] = utils.format_time(infos["duration"], "h")
             props['duration(m)'] = utils.format_time(infos["duration"], "m")
