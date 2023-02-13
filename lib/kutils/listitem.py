@@ -260,7 +260,6 @@ class ListItem:
         return {k: v for k, v in self._properties.items() if v}
 
     def get_listitem(self) -> xbmcgui.ListItem:
-        listitem: xbmcgui.ListItem
         listitem = xbmcgui.ListItem(label=str(self.label) if self.label else "",
                                     label2=str(self.label2) if self.label2 else "",
                                     path=self.path)
@@ -271,7 +270,6 @@ class ListItem:
             infos["mediatype"] = infos["media_type"]
             infos.pop("media_type")
         if "file" in infos:
-            infos["filenameandpath"] = infos["file"]
             infos.pop("file")
         if "duration" in infos:
             props['duration(h)'] = utils.format_time(infos["duration"], "h")
