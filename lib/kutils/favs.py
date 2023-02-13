@@ -84,3 +84,4 @@ def get_addons_by_author(author_name, installed="all"):
                           "fanart": item["fanart"]})
         item.set_properties({'installed': item["installed"]})
         items.append(item)
+    return items
