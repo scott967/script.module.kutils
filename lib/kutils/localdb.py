@@ -19,7 +19,8 @@ MOVIE_PROPS = ["title", "genre", "year", "rating", "director", "trailer",
                "playcount", "writer", "studio", "mpaa", "cast", "country",
                "imdbnumber", "runtime", "set", "showlink", "streamdetails",
                "top250", "votes", "file", "sorttitle",
-               "resume", "setid", "dateadded", "tag", "art", "userrating", "ratings", "uniqueid"]
+               "resume", "setid", "dateadded", "tag", "art", "userrating",
+               "ratings", "uniqueid", "premiered"]
 TV_PROPS = ["title", "genre", "year", "rating", "plot",
             "studio", "mpaa", "cast", "playcount", "episode",
             "imdbnumber", "premiered", "votes", "lastplayed",
@@ -188,27 +189,32 @@ class LocalDB:
                             'dbid': movie['movieid'],
                             'file': movie.get('file'),
                             'year': movie.get('year'),
+                            'premiered' : movie.get('premiered'),
+                            'tagline': movie.get('tagline'),
                             'writer': " / ".join(movie['writer']),
                             'mediatype': "movie",
                             'set': movie.get("set"),
                             'playcount': movie.get("playcount"),
                             'setid': movie.get("setid"),
                             'top250': movie.get("top250"),
-                            'imdbnumber': movie.get("imdbnumber"),
+                            'imdbnumber': movie.get("uniqueid").get("imdb", ""),
                             'userrating': movie.get('userrating'),
                             'trailer': trailer,
                             'rating': round(float(movie['rating']), 1),
                             'director': " / ".join(movie.get('director')),
-                            'writer': " / ".join(movie.get('writer')),
-                            # "tag": " / ".join(movie['tag']),
+                            #'writer': " / ".join(movie.get('writer')),
+                            #"tag": " / ".join(movie['tag']),
+                            'tag': movie.get('tag'),
                             "genre": " / ".join(movie['genre']),
                             'plot': movie.get('plot'),
                             'plotoutline': movie.get('plotoutline'),
                             'studio': " / ".join(movie.get('studio')),
                             'mpaa': movie.get('mpaa'),
                             'originaltitle': movie.get('originaltitle')})
-        db_movie.set_properties({'imdb_id': movie.get('imdbnumber'),
+        db_movie.set_properties({'imdb_id': movie.get('uniqueid').get('imdb', ''),
                                  'showlink': " / ".join(movie['showlink']),
+                                 'set': movie.get("set"),
+                                 'setid': movie.get("setid"),
                                  'percentplayed': played,
                                  'resume': resumable})
         db_movie.set_artwork(movie['art'])
@@ -411,14 +417,20 @@ class LocalDB:
             return None
         if media_type == "movie":
             data = kodijson.get_json(method="VideoLibrary.GetMovieDetails",
-                                     params={"properties": ["imdbnumber", "title", "year"], "movieid": int(dbid)})
+                                     params={"properties": ["uniqueid", "title", "year"], "movieid": int(dbid)})
             if "result" in data and "moviedetails" in data["result"]:
-                return data['result']['moviedetails']['imdbnumber']
+                try: 
+                    return data['result']['moviedetails']['uniqueid']['imdb']
+                except KeyError:
+                    return None
         elif media_type == "tvshow":
             data = kodijson.get_json(method="VideoLibrary.GetTVShowDetails",
-                                     params={"properties": ["imdbnumber", "title", "year"], "tvshowid": int(dbid)})
+                                     params={"properties": ["uniqueid", "title", "year"], "tvshowid": int(dbid)})
             if "result" in data and "tvshowdetails" in data["result"]:
-                return data['result']['tvshowdetails']['imdbnumber']
+                try:
+                    return data['result']['tvshowdetails']['uniqueid']['imdb']
+                except KeyError:
+                    return None
         return None
 
     def get_tmdb_id(self, media_type, dbid):
@@ -471,6 +483,7 @@ def media_streamdetails(filename, streamdetails):
             info['videoresolution'] = ""
         info['VideoCodec'] = str(video[0]['codec'])
         info["VideoAspect"] = select_aspectratio(video[0]['aspect'])
+        info["VideoHdrType"] = video[0].get('hdrtype', '')
     if audio:
         info['AudioCodec'] = audio[0]['codec']
         info['AudioChannels'] = audio[0]['channels']
