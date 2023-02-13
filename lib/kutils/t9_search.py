@@ -14,7 +14,10 @@ import ast
 from kutils import utils
 from kutils import addon
 from kutils import ActionHandler
-import AutoCompletion
+try:
+    import AutoCompletion
+except:
+    pass
 
 ch = ActionHandler()
 
@@ -163,10 +166,14 @@ class T9SearchDialog(xbmcgui.WindowXMLDialog):
     @utils.run_async
     def get_autocomplete_labels_async(self):
         self.getControl(9091).reset()
-        if self.search_str:
-            listitems = AutoCompletion.get_autocomplete_items(self.search_str)
-        else:
+        try:
+            if self.search_str:
+                listitems = AutoCompletion.get_autocomplete_items(self.search_str)
+            else:
+                listitems = list(self.last_searches)
+        except:
             listitems = list(self.last_searches)
+            utils.log('Add-on "Autocompletion for virtual keyboard" not installed')
         self.getControl(9091).addItems(utils.dict_to_listitems(listitems))
 
     def save_autocomplete(self):
