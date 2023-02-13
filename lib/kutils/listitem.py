@@ -525,6 +525,9 @@ class VideoItem(ListItem):
     def set_cast(self, value):
         self.cast = value
 
+    def get_cast(self):
+        return self.cast        
+
     def set_videoinfos(self, infos):
         self.videoinfo = infos
 
