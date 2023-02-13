@@ -328,8 +328,8 @@ def create_listitems(data=None, preload_images=0):
     return [item.get_listitem() for item in data] if data else []
 
 
-def translate_path(*args):
-    return xbmcvfs.translatePath(os.path.join(*args))
+def translate_path(arg1, *args):
+    return xbmcvfs.translatePath(os.path.join(arg1, *args))
 
 
 def get_infolabel(name):
