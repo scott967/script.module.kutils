@@ -164,7 +164,7 @@ def get_skin_string(name):
     """
     get String with name *name
     """
-    return xbmc.getInfoLabel("Skin.String(%s)")
+    return xbmc.getInfoLabel("Skin.String(%s)" % name)
 
 
 def set_skin_string(name, value):
