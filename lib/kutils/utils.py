@@ -555,10 +555,10 @@ def pretty_date(time=False):
     'just now', etc
     # https://stackoverflow.com/questions/1551382/user-friendly-time-format-in-python
     """
-    now = datetime.now()
+    now = datetime.datetime.now()
     if type(time) is int:
-        diff = now - datetime.fromtimestamp(time)
-    elif isinstance(time, datetime):
+        diff = now - datetime.datetime.fromtimestamp(time)
+    elif isinstance(time, datetime.datetime):
         diff = now - time
     elif not time:
         diff = now - now
