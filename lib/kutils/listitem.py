@@ -562,7 +562,7 @@ class VideoItem(ListItem):
         from kutils.localdb import LocalDB
         if not dbid:
             return None
-        self.update_from_listitem(LocalDB.get_movie(dbid))
+        self.update_from_listitem(LocalDB(last_fm=None).get_movie(dbid))
 
 
 class GameItem(ListItem):
