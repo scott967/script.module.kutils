@@ -25,8 +25,6 @@ def blur(input_img, radius=25):
         return {}
     if not xbmcvfs.exists(IMAGE_PATH):
         xbmcvfs.mkdir(IMAGE_PATH)
-    input_img = utils.translate_path(urllib.parse.unquote(input_img))
-    input_img = input_img.replace("image://", "").rstrip("/")
     cachedthumb = xbmc.getCacheThumbName(input_img)
     filename = "%s-radius_%i.png" % (cachedthumb, radius)
     targetfile = os.path.join(IMAGE_PATH, filename)
