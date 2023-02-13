@@ -13,7 +13,6 @@ import time
 import re
 import hashlib
 import urllib.request, urllib.parse, urllib.error
-import urllib.request, urllib.error, urllib.parse
 from io import StringIO
 
 import xbmc
@@ -21,12 +20,13 @@ import xbmcgui
 import xbmcvfs
 import requests
 
-import YDStreamExtractor
+#import YDStreamExtractor
 from kutils import addon
 
 
 def youtube_info_by_id(youtube_id):
-    vid = get_youtube_info(youtube_id)
+    #vid = get_youtube_info(youtube_id)
+    vid = None #added
     if not vid:
         return None, None
     url = vid.streamURL()
@@ -40,9 +40,9 @@ def youtube_info_by_id(youtube_id):
     return url, listitem
 
 
-def get_youtube_info(youtube_id):
-    return YDStreamExtractor.getVideoInfo(youtube_id,
-                                          quality=1)
+#def get_youtube_info(youtube_id):
+#    return YDStreamExtractor.getVideoInfo(youtube_id,
+#                                          quality=1)
 
 
 def log(*args):
@@ -212,13 +212,13 @@ def extract_youtube_id(raw_string):
         return ""
 
 
-def download_video(youtube_id):
-    """
-    download youtube video with id *youtube_id
-    """
-    vid = YDStreamExtractor.getVideoInfo(youtube_id,
-                                         quality=1)
-    YDStreamExtractor.handleDownload(vid)
+# def download_video(youtube_id):
+#     """
+#     download youtube video with id *youtube_id
+#     """
+#     vid = YDStreamExtractor.getVideoInfo(youtube_id,
+#                                          quality=1)
+#     YDStreamExtractor.handleDownload(vid)
 
 
 def notify(header="", message="", icon=addon.ICON, time=5000, sound=True):
