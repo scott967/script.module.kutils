@@ -115,6 +115,7 @@ def format_seconds(seconds):
 
 def dump_dict(dct):
     return json.dumps(dct,
+                      ensure_ascii=False,
                       sort_keys=True,
                       indent=4,
                       separators=(',', ': '))
@@ -374,8 +375,8 @@ def get_http(url, headers=False):
         try:
             request = requests.get(url, headers=headers)
             return request.text
-        except Exception:
-            log("get_http: could not get data from %s" % url)
+        except Exception as err:
+            log(f"get_http: could not get data from {url} exception {err}")
             xbmc.sleep(1000)
             succeed += 1
     return None
@@ -431,9 +432,8 @@ def get_JSON_response(url="", cache_days=7.0, folder=False, headers=False):
             results = json.loads(response)
             # utils.log("download %s. time: %f" % (url, time.time() - now))
             save_to_file(results, hashed_url, cache_path)
-        except Exception:
-            log("Exception: Could not get new JSON data from %s. Tryin to fallback to cache" % url)
-            log(response)
+        except Exception as err:
+            log(f"Exception: Could not get new JSON data from {url} with error {err}. Trying to fallback to cache")
             results = read_from_file(path) if xbmcvfs.exists(path) else []
     if not results:
         return None
