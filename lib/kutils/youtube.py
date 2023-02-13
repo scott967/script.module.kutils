@@ -80,6 +80,8 @@ def get_duration_in_seconds(duration):
     """
     convert youtube duration string to seconds int
     """
+    if not duration.endswith('S'):
+        duration = duration + '0S'
     duration = duration[2:-1].replace("H", "M").split("M")
     if len(duration) == 3:
         return int(duration[0]) * 3600 + int(duration[1]) * 60 + int(duration[2])
