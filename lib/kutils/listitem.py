@@ -289,7 +289,7 @@ class ListItem:
                 vinfotag = listitem.getVideoInfoTag()
                 for k, v in infos.items():
                     if k in ['genre','country','director','studio','writer']: v = v.split(' / ')
-                    if k in ['year']: v = int(v)
+                    if k in ['year', 'votes', 'userrating']: v = int(v)
                     if k in ['file', 'media_type']: continue
                     getattr(vinfotag, INFOTAG_DISPATCHER[k])(v)
         return listitem
