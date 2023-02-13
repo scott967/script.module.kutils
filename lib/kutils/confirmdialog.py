@@ -21,7 +21,7 @@ class ConfirmDialog(xbmcgui.WindowXMLDialog):
     open yesnodialog, return -1 for cancelled, otherwise index (0-2)
     """
     def __init__(self, *args, **kwargs):
-        xbmcgui.WindowXMLDialog.__init__(self)
+        xbmcgui.WindowXMLDialog.__init__(self, 'ConfirmDialog.xml', kwargs.get('path', ''))
         self.yeslabel = kwargs.get('yeslabel')
         self.nolabel = kwargs.get('nolabel')
         self.header = kwargs.get('header')
@@ -30,6 +30,7 @@ class ConfirmDialog(xbmcgui.WindowXMLDialog):
         self.index = -1
 
     def onInit(self):
+        self.setFocusId(10)
         self.getControl(ID_BUTTON_YES).setLabel(self.yeslabel)
         self.getControl(ID_BUTTON_NO).setLabel(self.nolabel)
         self.getControl(ID_LABEL_HEADER).setLabel(self.header)
@@ -47,12 +48,12 @@ class ConfirmDialog(xbmcgui.WindowXMLDialog):
         self.close()
 
 
-def open(header="", text="", yeslabel=addon.LANG(107), nolabel=addon.LANG(106), extrabutton=False):
+def open(header="", text="", yeslabel=addon.LANG(107), nolabel=addon.LANG(106), extrabutton=False, path=""):
     """
     open yesnodialog, return -1 for cancelled, otherwise index (0-2)
     """
     xbmc.executebuiltin("Dialog.Close(busydialognocancel)")
-    w = ConfirmDialog('DialogConfirm.xml', addon.PATH,
+    w = ConfirmDialog('DialogConfirm.xml', path,
                       yeslabel=yeslabel,
                       nolabel=nolabel,
                       header=header,
